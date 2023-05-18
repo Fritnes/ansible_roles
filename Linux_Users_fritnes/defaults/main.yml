@@ -1,0 +1,4 @@
+---
+# defaults file for users
+allow_ssh_password: "false"
+students_allow: "false"

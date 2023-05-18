@@ -1,0 +1,15 @@
+---
+# handlers file for base
+  - name: Restart fail2ban
+    systemd:
+      state: restarted
+      enabled: yes
+      daemon_reload: yes
+      name: "fail2ban"
+
+  - name: Restart nftables
+    systemd:
+      state: restarted
+      enabled: yes
+      daemon_reload: yes
+      name: "nftables"

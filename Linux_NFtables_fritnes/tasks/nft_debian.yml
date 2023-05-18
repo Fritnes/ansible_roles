@@ -1,0 +1,37 @@
+---
+#Task for debian based firewall
+- name: Remove UFW
+  apt:
+    name:
+    - ufw
+    purge: yes
+    state: absent
+  register: ufw_remove
+
+- name: Disable & Mask UFW
+  shell: systemctl stop ufw; systemctl disable ufw; systemctl mask ufw
+  when: ufw_remove.changed
+
+- name: Install nftables packages
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+    name:
+    - nftables
+    state: latest
+  register: nftables_config
+
+- name: Copy nftables config
+  copy:
+    src: "{{ nftables_config_path }}"
+    dest: /etc/nftables.conf
+  notify: Restart nftables
+  when: (nftables_config_path is defined) and (nftables_config_path|length > 0)
+  register: host_nftables_config
+
+- name: Copy default nftables config
+  template:
+    src: nftables.conf.j2
+    dest: /etc/nftables.conf
+  notify: Restart nftables
+  when: (ufw_remove.changed or nftables_config.changed) and host_nftables_config

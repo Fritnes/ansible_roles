@@ -1,0 +1,15 @@
+---
+# defaults file for base
+
+maltrail_path: "/opt/maltrail"
+maltrail_repo: "https://github.com/stamparm/maltrail.git"
+
+# autostart server & periodic update
+cron_command_autostart_server: 'if [ -n "$(ps -ef | grep -v grep | grep {{ maltrail_path }}/server)" ]; then : ; else python3 {{ maltrail_path }}/server.py -c {{ maltrail_path }}/maltrail.conf; fi'
+cron_command_periodic_update: 'cd {{ maltrail_path }} && git pull'
+
+# autostart sensor & periodic restart
+cron_command_autostart_sensor: 'if [ -n "$(ps -ef | grep -v grep | grep {{ maltrail_path }}/sensor)" ]; then : ; else python3 {{ maltrail_path }}/sensor.py -c {{ maltrail_path }}/maltrail.conf; fi'
+cron_command_periodic_restart: '/usr/bin/pkill -f maltrail'
+
+cron_command_fail2ban_integration: "for ip in $(curl http://127.0.0.1:8338/fail2ban 2>/dev/null | grep -P '^[0-9.]+$'); do fail2ban-client set sshd banip $ip; done"

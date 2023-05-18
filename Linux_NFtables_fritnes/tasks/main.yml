@@ -1,0 +1,9 @@
+---
+# tasks file for Ansible_Base
+  - name: Dependonsi Debian
+    include: "nft_debian.yml"
+    when: ansible_os_family == "Debian"
+
+  - name: Dependonsi Debian
+    include: "f2b_debian.yml"
+    when: ansible_os_family == "Debian"

@@ -1,0 +1,8 @@
+---
+# handlers file for AnsiblePROXMOX
+  - name: Restart fail2ban
+    systemd:
+      state: restarted
+      enabled: yes
+      daemon_reload: yes
+      name: "fail2ban"

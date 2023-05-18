@@ -1,0 +1,28 @@
+---
+# tasks file for RPstore
+- name: Install useful packages
+  apt:
+    name:
+    - samba
+    - smbclient
+    - cifs-utils
+    state: latest
+
+- name: Ensure group "somegroup" exists
+  ansible.builtin.group:
+    name: "{{ smb_private_valid_users }}"
+    state: present
+
+- name: Creates directory
+  file:
+    path: "{{ smb_private_path }}"
+    owner: root
+    group: "{{ smb_private_valid_users }}"
+    mode: "0770"
+    state: directory
+
+- name: Generate conf
+  template:
+    src: "smb.conf.j2"
+    dest: "/etc/samba/smb.conf"
+  notify: Restart nmbd

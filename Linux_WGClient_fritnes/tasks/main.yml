@@ -1,0 +1,14 @@
+---
+# tasks file for WGClient
+- name: Install useful packages
+  apt:
+    name:
+    - wireguard
+    - resolvconf
+    state: latest
+
+- name: Generate conf
+  copy:
+    src: "{{ wireguard_config_path }}"
+    dest: "/etc/wireguard/{{ wg_config_name }}.conf"
+  notify: Restart wg-quick

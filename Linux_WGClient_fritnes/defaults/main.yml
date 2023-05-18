@@ -1,0 +1,3 @@
+---
+# defaults file for WGClient
+wg_config_name: wg0

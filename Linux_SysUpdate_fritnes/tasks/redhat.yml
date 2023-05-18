@@ -1,0 +1,25 @@
+---
+# tasks file for linux-update
+- name: Enable EPEL Repository on CentOS 8
+  dnf:
+    name: epel-release
+    state: latest
+  when: ansible_facts ['distribution_major_version'] >= '8'
+
+- name: Enable EPEL Repository on CentOS 7
+  yum:
+    name: epel-release
+    state: latest
+  when: ansible_facts ['distribution_major_version'] == '7'
+
+- name: DNF update the system
+  dnf:
+    name:  "*"
+    state: latest
+  when: ansible_facts  ['distribution_major_version'] >= '8'
+
+- name: Yum update the system
+  yum:
+    name: "*"
+    state: latest
+  when: ansible_facts ['distribution_major_version'] <= '7'

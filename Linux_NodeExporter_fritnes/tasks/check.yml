@@ -1,0 +1,30 @@
+---
+
+  - name: Check if node_exporter is installed
+    stat:
+      path: "{{ node_exporter_folder }}/node_exporter"
+    register: __node_exporter_is_installed
+    check_mode: false
+
+  - name: Gather currently installed node_exporter version (if any)
+    command: "{{ node_exporter_folder }}/node_exporter --version"
+    args:
+      warn: false
+    changed_when: false
+    register: __node_exporter_current_releases
+    check_mode: false
+    when: __node_exporter_is_installed.stat.exists
+
+  - name: Determine latest GitHub release (local)
+    delegate_to: localhost
+    become: false
+    uri:
+      url: "https://api.github.com/repos/prometheus/node_exporter/releases"
+      body_format: json
+    register: _github_releases
+    until: _github_releases.status == 200
+    retries: 5
+
+  - name: Set verison
+    set_fact:
+      node_exporter_latest_releases: "{{ _github_releases.json.0.tag_name [1:] }}"

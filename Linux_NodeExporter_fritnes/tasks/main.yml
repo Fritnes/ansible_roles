@@ -1,0 +1,18 @@
+---
+# tasks file for node_exporter
+  - import_tasks: check.yml
+    tags:
+      - check_node_exporter
+
+  - import_tasks: install.yml
+    become: true
+    when:
+      ( not __node_exporter_is_installed.stat.exists ) or
+      ( (__node_exporter_current_releases.stdout_lines | length > 0) and  (__node_exporter_current_releases.stdout_lines[0].split(" ")[2] != node_exporter_latest_releases ) ) or
+      ( (__node_exporter_current_releases.stderr_lines | length > 0) and  (__node_exporter_current_releases.stderr_lines[0].split(" ")[2] != node_exporter_latest_releases ) )
+
+  - import_tasks: scripts.yml
+    tags:
+      - install_collection
+
+  - import_tasks: config.yml

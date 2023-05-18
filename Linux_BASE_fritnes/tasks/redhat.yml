@@ -1,0 +1,35 @@
+---
+      - name: Disable selinux
+        lineinfile:
+          dest: /etc/selinux/config
+          state: present
+          regexp: '^SELINUX='
+          line: 'SELINUX=disabled'
+
+      - name: Install dependonsi
+        yum:
+          name:
+          - epel-release
+          - curl
+          - smartmontools
+          - traceroute
+          - nmap
+          - net-tools
+          - qemu-guest-agent
+          - net-tools
+          - rsyslog
+          state: latest
+
+      - name: Install qemu-guest-agent
+        yum:
+          name:
+          - qemu-guest-agent
+          state: latest
+        when: VM and HYPERVISOR == "KVM"
+
+      - name: Install open-vm-tools
+        yum:
+          name:
+          - open-vm-tools
+          state: latest
+        when: VM and HYPERVISOR == "VMware"

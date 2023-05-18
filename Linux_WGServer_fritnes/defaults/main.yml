@@ -1,0 +1,7 @@
+---
+# defaults file for AnsibleWIREGUARD
+docker_folder: "/opt"
+version: "3"
+wggui_container_name: "wggui"
+WGUI_USERNAME: "admin"
+WGUI_PASSWORD: "admin"

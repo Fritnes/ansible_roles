@@ -1,0 +1,7 @@
+---
+# defaults file for NodeExporter
+    arch: "amd64"
+    monitoring_tools_folder: "/opt/monitoring_tools"
+    node_exporter_user: "prometheus"
+    node_exporter_folder: "{{monitoring_tools_folder}}/node_exporter"
+    node_exporter_service_name: "node_exporter"

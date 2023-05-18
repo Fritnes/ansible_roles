@@ -1,0 +1,73 @@
+---
+# tasks file for AnsibleMALTRAIL
+- name: Install useful packages
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+    name:
+    - git
+    - python3-pcapy
+    - python3-setuptools
+    state: latest
+
+- name: Clone a github repository
+  git:
+    repo: "{{ maltrail_repo }}"
+    dest: "{{ maltrail_path }}"
+    clone: yes
+    update: yes
+
+#Server
+- name: Autostart maltrail server
+  cron:
+    name: "Autostart maltrail server"
+    minute: "*/5"
+    job: "{{ cron_command_autostart_server }}"
+
+- name: Periodic maltrail update
+  cron:
+    name: "Periodic maltrail update"
+    minute: "0"
+    hour: "1"
+    job: "{{ cron_command_periodic_update }}"
+
+#Sensor
+- name: Autostart maltrail sensor
+  cron:
+    name: "Autostart maltrail sensor"
+    minute: "*/1"
+    job: "{{ cron_command_autostart_sensor }}"
+
+- name: Periodic maltrail restart
+  cron:
+    name: "Periodic maltrail restart"
+    minute: "2"
+    hour: "1"
+    job: "{{ cron_command_periodic_restart }}"
+
+- name: fail2ban_integration
+  cron:
+    name: "fail2ban_integration"
+    minute: "10"
+    job: "{{ cron_command_fail2ban_integration }}"
+
+- name: Copy the systemd {{ item }} services files
+  template:
+    src: "{{ item }}.service"
+    dest: /etc/systemd/system/
+    owner: root
+    group: root
+    mode: 0644
+  loop:
+    - "maltrail-sensor"
+    - "maltrail-server"
+
+- name: Restart {{ item }} service
+  systemd:
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+    name: "{{ item }}"
+  loop:
+    - "maltrail-sensor"
+    - "maltrail-server"

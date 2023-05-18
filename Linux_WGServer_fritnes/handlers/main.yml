@@ -1,0 +1,17 @@
+---
+# handlers file for AnsibleWIREGUARD
+  - name: Restart {{wggui_container_name}} container
+    systemd:
+      state: restarted
+      enabled: yes
+      daemon_reload: yes
+      name: "{{ wggui_container_name }}"
+
+  - name: Restart wireguard
+    systemd:
+      state: restarted
+      enabled: yes
+      daemon_reload: yes
+      name: "{{item}}"
+    loop:
+      - "wgui.path"

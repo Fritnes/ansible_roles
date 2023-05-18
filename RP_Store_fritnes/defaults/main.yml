@@ -1,0 +1,5 @@
+---
+# defaults file for RPstore
+smb_interfaces: "172.16.200.0/24 eth0"
+smb_private_valid_users: "smbshare"
+smb_private_path: "/store01/smb/"

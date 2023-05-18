@@ -1,0 +1,39 @@
+---
+# tasks file for docker
+  - name: Upgrade system
+    apt:
+      update_cache: yes
+#      upgrade: dist
+
+  - name: Install pre-requrements
+    apt:
+      pkg:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - software-properties-common
+      - gnupg-agent
+      - python3-pip
+
+  - name: Add Docker GPG apt Key
+    apt_key:
+      url: https://download.docker.com/linux/{{ansible_distribution | lower | replace('"', "")}}/gpg
+      state: present
+
+  - name: Add Docker Repository
+    apt_repository:
+      repo: deb https://download.docker.com/linux/{{ansible_distribution | lower | replace('"', "")}} {{ansible_distribution_release | lower | replace('"', "")}} stable
+      state: present
+
+  - name: Install latest docker-ce
+    apt:
+      update_cache: yes
+      pkg:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    notify: Restart docker
+
+  - name: Install bottle python package
+    pip:
+      name: docker-compose

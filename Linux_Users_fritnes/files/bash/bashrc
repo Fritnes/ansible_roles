@@ -1,0 +1,103 @@
+# ~/.bashrc: executed by bash(1) for non-login shells.
+# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
+# for examples
+
+# If not running interactively, don't do anything
+case $- in
+    *i*) ;;
+      *) return;;
+esac
+
+# Задаем параметры истории и отображения
+HISTCONTROL=ignoreboth 
+HISTSIZE=1000
+HISTFILESIZE=2000
+
+shopt -s histappend # история команд будет добавлена в файл $HISTFILE
+shopt -s checkwinsize # обновляет переменные LINES
+
+# make less more friendly for non-text input files, see lesspipe(1)
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
+# PS1
+if [ "$(id -un)" = root ]; then
+  PS1="[\[$(tput sgr0)\]\[\033[38;5;6m\]\A\[$(tput sgr0)\]][\[$(tput sgr0)\]\[\033[38;5;9m\]\u\[$(tput sgr0)\]@\[$(tput sgr0)\]\[\033[38;5;6m\]\h\[$(tput sgr0)\]]:\[$(tput sgr0)\]\[\033[38;5;203m\]\W\[$(tput sgr0)\]\\$ \[$(tput sgr0)\]"
+else
+  PS1="[\[$(tput sgr0)\]\[\033[38;5;6m\]\A\[$(tput sgr0)\]][\[$(tput sgr0)\]\[\033[38;5;6m\]\u\[$(tput sgr0)\]@\[$(tput sgr0)\]\[\033[38;5;6m\]\h\[$(tput sgr0)\]]:\[$(tput sgr0)\]\[\033[38;5;203m\]\W\[$(tput sgr0)\]\\$ \[$(tput sgr0)\]"
+fi
+
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    alias dmesg='dmesg --color=auto'
+    alias gcc='gcc -fdiagnostics-color=auto'
+    alias dir='dir --color=auto'
+    alias diff='diff --color=auto'
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+    alias ip='ip --color=auto'
+fi
+
+# some more ls aliases
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+
+# Alias definitions.
+
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi
+
+# Автодополнение bash-completion
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
+
+#My alias
+alias bk='f(){ cp $@ $@-$(date '+%Y%m%d'); }; f'
+alias anr='ansible-galaxy install -f -r requirements.yaml'
+alias S='sudo su'
+
+function ga {
+  if [ -z "$1" ]; then
+    git add *; git commit -m $(date '+%d%m%Y'); git push -u origin master
+  else
+    git add *; git commit -m $1; git push -u origin master
+  fi
+
+function extract {
+  if [ -z "$1" ]; then
+    echo "Usage: extract <path/file_name>.<zip|rar|bz2|gz|tar|tbz2|tgz|Z|7z|xz|ex|tar.bz2|tar.gz|tar.xz>"
+  else
+    if [ -f "$1" ]; then
+      case "$1" in
+      *.tar.bz2) tar xvjf ./"$1" ;;
+      *.tar.gz) tar xvzf ./"$1" ;;
+      *.tar.xz) tar xvJf ./"$1" ;;
+      *.lzma) unlzma ./"$1" ;;
+      *.bz2) bunzip2 ./"$1" ;;
+      *.rar) unrar x -ad ./"$1" ;;
+      *.gz) gunzip ./"$1" ;;
+      *.tar) tar xvf ./"$1" ;;
+      *.tbz2) tar xvjf ./"$1" ;;
+      *.tgz) tar xvzf ./"$1" ;;
+      *.zip) unzip ./"$1" ;;
+      *.Z) uncompress ./"$1" ;;
+      *.7z) 7z x ./"$1" ;;
+      *.xz) unxz ./"$1" ;;
+      *.exe) cabextract ./"$1" ;;
+      *) echo "extract: '$1' - неизвестный архив" ;;
+      esac
+    else
+      echo "$1 - файл не существует"
+    fi
+  fi
+}
+}

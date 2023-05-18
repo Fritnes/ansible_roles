@@ -1,0 +1,96 @@
+---
+#Task for debian based
+      - name: dpkg
+        shell: dpkg --configure -a
+
+      - name: Gather Package facts
+        package_facts:
+          manager: auto
+
+      - name: Install useful packages
+        apt:
+          update_cache: yes
+          cache_valid_time: 3600
+          name:
+          - iputils-ping
+          - dnsutils
+          - cron
+          - curl
+          - smartmontools
+          - iftop
+          - traceroute
+          - nmap
+          - net-tools
+          - rsyslog
+          - zip
+          - htop
+          - screen
+          state: latest
+
+      - name: Install qemu-guest-agent
+        apt:
+          name:
+          - qemu-guest-agent
+          state: latest
+        when: VM and HYPERVISOR == "KVM"
+
+      - name: Install open-vm-tools
+        apt:
+          name:
+          - open-vm-tools
+          state: latest
+        when: VM and HYPERVISOR == "VMware"
+
+      - name: Remove package file
+        apt:
+          name:
+          - snapd
+          purge: yes
+          state: absent
+
+      - name: Removing snapd files
+        file:
+          path: "{{ item }}"
+          state: absent
+        loop:
+          - /snap
+          - /var/snap
+          - /var/lib/snapd
+
+      - name: Change resolved.conf
+        lineinfile:
+          dest: /etc/systemd/resolved.conf
+          state: present
+          regexp: '^DNSStubListener='
+          line: 'DNSStubListener=no'
+        notify: Restart systemd-resolved
+        when: noCT
+        ignore_errors: yes
+
+      - name: Link for resolv.config
+        file:
+          src: "/run/systemd/resolve/resolv.conf"
+          dest: "/etc/resolv.conf"
+          state: link
+        when: noCT
+        ignore_errors: yes
+
+      - name: Create /etc/apt/trusted.gpg
+        copy:
+          content: ""
+          dest: /etc/apt/trusted.gpg
+          force: no
+
+      - name: Link for trusted.gpg
+        file:
+          src: "/etc/apt/trusted.gpg"
+          dest: "/etc/apt/trusted.gpg.d/trusted.gpg"
+          state: link
+
+      - name: Update Timezone
+        copy: content="{{set_timezone}}\n" dest=/etc/timezone owner=root group=root mode=0644
+        register: timezone
+
+      - name: Reconfigure Timezone Data (if changed)
+        shell: dpkg-reconfigure -f noninteractive tzdata
+        when: timezone.changed

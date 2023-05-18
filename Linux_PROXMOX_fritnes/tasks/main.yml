@@ -1,0 +1,33 @@
+---
+# tasks file for AnsiblePROXMOX
+
+- name: Remove specified repository from sources list
+  apt_repository:
+    repo: "{{ item }}"
+    state: absent
+  loop:
+    - "deb https://enterprise.proxmox.com/debian bullseye pve-enterprise"
+    - "deb https://enterprise.proxmox.com/debian/pve bullseye pve-enterprise"
+
+- name: Add specified repository into sources list
+  apt_repository:
+    repo: deb http://download.proxmox.com/debian bullseye pve-no-subscription
+    state: present
+
+- name: Install useful packages
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+    name:
+    - curl
+    - smartmontools
+    - iftop
+    - traceroute
+    - nmap
+    - net-tools
+    - zip
+    - htop
+    state: latest
+
+- name: Dependonsi Debian
+  include: "f2b.yml"

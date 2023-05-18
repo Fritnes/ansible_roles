@@ -1,0 +1,64 @@
+---
+# tasks file for users
+- name: Check 'wheel' group
+  group:
+    name: wheel
+    state: present
+
+- name: Allow 'wheel' group to have passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%wheel'
+    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+    validate: 'visudo -cf %s'
+
+- name: SSHD
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    state: present
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  loop:
+    - { regexp: '^PermitEmptyPasswords', line: 'PermitEmptyPasswords no' }
+    - { regexp: '^PermitRootLogin', line: 'PermitRootLogin no' }
+    - { regexp: '^PubkeyAuthentication', line: 'PubkeyAuthentication yes' }
+  notify: Restart sshd
+
+- name: Deny Password
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    state: present
+    regexp: '^PasswordAuthentication'
+    line: 'PasswordAuthentication no'
+  notify: Restart sshd
+  when: allow_ssh_password != "true"
+
+- name: ADD Users
+  include_tasks: add_users.yml
+  loop: "{{ users }}"
+
+- name: ADD students
+  include_tasks: student_users.yml
+  loop: "{{ student_users | default([], true) }}"
+  when: students_allow == "true"
+
+- name: DEL Users
+  include_tasks: del_users.yml
+  loop: "{{ del_users | default([], true) }}"
+
+- name: Set up .bashrc root
+  copy:
+    src: "bash/bashrc"
+    dest: "/root/.bashrc"
+    owner: "root"
+    group: "root"
+    mode: 0644
+
+- name: Set up .dircolors root
+  copy:
+    src: "bash/dircolors"
+    dest: "/root/.dircolors"
+    owner: "root"
+    group: "root"
+    mode: 0644

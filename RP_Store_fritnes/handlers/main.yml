@@ -1,0 +1,15 @@
+---
+# handlers file for users
+  - name: Restart nmbd
+    systemd:
+      state: restarted
+      enabled: yes
+      daemon_reload: yes
+      name: nmbd
+
+  - name: Restart hd-idle
+    systemd:
+      state: restarted
+      enabled: yes
+      daemon_reload: yes
+      name: hd-idle

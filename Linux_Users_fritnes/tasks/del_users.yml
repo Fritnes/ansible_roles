@@ -1,0 +1,9 @@
+- name: Del users {{ item }}
+  user:
+    name: "{{ item }}"
+    state: "absent"
+
+- name: Del home folder {{ item }}
+  file:
+    path: "/home/{{ item }}"
+    state: "absent"

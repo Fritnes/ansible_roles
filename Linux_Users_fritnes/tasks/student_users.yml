@@ -1,0 +1,31 @@
+- name: Add students {{ item.username }}
+  user:
+    name: "{{ item.username }}"
+    groups: "{{ item.group }}"
+    append: yes
+    shell: "{{ item.shell }}"
+    state: "present"
+    createhome: yes
+
+- name: Set up authorized keys for {{ item.username }}
+  authorized_key:
+    user: "{{ item.username }}"
+    key: "{{ lookup('file', '{{ item.public_key }}' ) }}"
+#    key: "{{ item.public_key }}"
+    state: "present"
+
+- name: Set up .bashrc for {{ item.username }}
+  copy:
+    src: "bash/bashrc"
+    dest: "/home/{{ item.username }}/.bashrc"
+    owner: "{{ item.username }}"
+    group: "{{ item.username }}"
+    mode: 0644
+
+- name: Set up .dircolors for {{ item.username }}
+  copy:
+    src: "bash/dircolors"
+    dest: "/home/{{ item.username }}/.dircolors"
+    owner: "{{ item.username }}"
+    group: "{{ item.username }}"
+    mode: 0644

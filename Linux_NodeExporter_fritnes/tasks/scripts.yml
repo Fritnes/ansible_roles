@@ -1,0 +1,54 @@
+---
+
+- name: Apt testfile_collector
+  block:
+
+    - name: cron APT
+      cron:
+        name: "Apt node_exporter collection"
+        hour: "5"
+        job: "{{node_exporter_folder}}/scripts_collector/apt.sh > {{node_exporter_folder}}/textfile_collector/apt.prom"
+
+    - name: copy APT
+      copy:
+        src: "apt.sh"
+        mode: "755"
+        dest: "{{node_exporter_folder}}/scripts_collector/apt.sh"
+
+  when: ansible_os_family == "Debian"
+
+
+- name: YUM testfile_collector
+  block:
+    
+    - name: cron YAM
+      cron:
+        name: "YUM node_exporter collection"
+        hour: "5"
+        job: "{{node_exporter_folder}}/scripts_collector/yum.sh > {{node_exporter_folder}}/textfile_collector/yum.prom"
+
+    - name: copy YUM
+      copy:
+        src: "yum.sh"
+        mode: "755"
+        dest: "{{node_exporter_folder}}/scripts_collector/yum.sh"
+
+  when: ansible_os_family == "RedHat" or ansible_os_family == "Rocky"
+
+
+- name: DHCPD testfile_collector
+  block:
+
+    - name: cron DHCPD
+      cron:
+        name: "DHCPD node_exporter collection"
+        minute: "*/5"
+        job: "{{node_exporter_folder}}/scripts_collector/dhcp.py > {{node_exporter_folder}}/textfile_collector/dhcp.prom"
+
+    - name: copy DHCPD
+      copy:
+        src: "dhcp.py"
+        mode: "755"
+        dest: "{{node_exporter_folder}}/scripts_collector/dhcp.py"
+
+  when: 'node_exporter_service_monitoring_list is defined and "DHCPD" in node_exporter_service_monitoring_list'

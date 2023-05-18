@@ -1,0 +1,48 @@
+---
+
+  - name: Add monitoring user
+    user:
+      name: "{{ node_exporter_user }}"
+      append: "yes"
+      shell: "/sbin/nologin"
+      state: "present"
+      createhome: "no"
+
+  - name: Creates directory
+    file:
+      path: "{{item }}"
+      state: directory
+    loop:
+      - "{{node_exporter_folder}}/textfile_collector"
+      - "{{node_exporter_folder}}/scripts_collector"
+
+  - name: Download node_exporter binary to local folder
+    become: false
+    get_url:
+      url: "https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_latest_releases }}/node_exporter-{{ node_exporter_latest_releases }}.linux-{{ arch }}.tar.gz"
+      dest: "/tmp/node_exporter-{{ node_exporter_latest_releases }}.linux-{{ arch }}.tar.gz"
+      mode: '0644'
+    register: _download_binary
+    until: _download_binary is succeeded
+    retries: 5
+    delay: 2
+    delegate_to: localhost
+    check_mode: false
+
+  - name: Unpack node_exporter binary
+    become: false
+    unarchive:
+      src: "/tmp/node_exporter-{{ node_exporter_latest_releases }}.linux-{{ arch }}.tar.gz"
+      dest: "/tmp"
+      creates: "/tmp/node_exporter-{{ node_exporter_latest_releases }}.linux-{{ arch }}/node_exporter"
+    delegate_to: localhost
+    check_mode: false
+
+  - name: Propagate node_exporter binaries
+    copy:
+      src: "/tmp/node_exporter-{{ node_exporter_latest_releases }}.linux-{{ arch }}/node_exporter"
+      dest: "{{ node_exporter_folder }}/node_exporter"
+      mode: 0755
+      owner: "{{ node_exporter_user }}"
+      group: "{{ node_exporter_user }}"
+    notify: Restart Node Exporter

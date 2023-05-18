@@ -1,0 +1,8 @@
+---
+# handlers file for WGClient
+  - name: Restart wg-quick
+    systemd:
+      state: restarted
+      enabled: yes
+      daemon_reload: no
+      name: "wg-quick@{{wg_config_name}}.service"
