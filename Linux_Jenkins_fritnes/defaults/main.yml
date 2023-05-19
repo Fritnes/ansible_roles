@@ -1,0 +1,5 @@
+---
+# defaults file for jenkins
+docker_folder: "/opt"
+version: "3.7"
+jenkins_container_name: "jenkins"

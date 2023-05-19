@@ -1,0 +1,33 @@
+---
+# tasks file for jenkins
+  - name: Create directorys
+    file:
+      path: "{{item }}"
+      state: directory
+    loop:
+      - "{{docker_folder}}/{{jenkins_container_name}}"
+      - "{{docker_folder}}/{{jenkins_container_name}}/jenkins_home"
+
+  - name: Generate docker_compose
+    template:
+      src: "docker_compose.j2"
+      dest: "{{docker_folder}}/{{jenkins_container_name}}/docker-compose.yml"
+    notify: Restart {{jenkins_container_name}} container
+
+  - name: Generate Dockerfile
+    template:
+      src: "Dockerfile.j2"
+      dest: "{{docker_folder}}/{{jenkins_container_name}}/Dockerfile"
+    notify: Restart {{jenkins_container_name}} container
+
+  - name: Update contaider
+    shell: "docker-compose pull"
+    args:
+      chdir: "{{docker_folder}}/{{jenkins_container_name}}"
+    changed_when: "'... pull complete' in result.stderr | default('')"
+
+  - name: Generate init
+    template:
+      src: "docker_compose_service.j2"
+      dest: "/etc/systemd/system/{{jenkins_container_name}}.service"
+    notify: Restart {{jenkins_container_name}} container

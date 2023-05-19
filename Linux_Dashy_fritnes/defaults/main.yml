@@ -1,0 +1,5 @@
+---
+# defaults file for dashy
+docker_folder: "/opt"
+dashy_container_name: "dashy"
+dashy_config_force: "false"

@@ -1,0 +1,14 @@
+[Unit]
+Description={{jenkins_container_name}}
+After=docker.service
+BindsTo=docker.service
+
+[Service]
+Restart=always
+WorkingDirectory={{docker_folder}}/{{jenkins_container_name}}/
+ExecStartPre=docker-compose pull
+ExecStart=docker-compose up
+ExecStop=docker-compose down
+
+[Install]
+WantedBy=multi-user.target

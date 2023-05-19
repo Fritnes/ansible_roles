@@ -1,0 +1,36 @@
+---
+# tasks file for dashy
+  - name: Creates dashy directory
+    file:
+      path: "{{item }}"
+      state: directory
+    loop:
+      - "{{docker_folder}}/{{dashy_container_name}}"
+      - "{{docker_folder}}/{{dashy_container_name}}/item-icons"
+
+  - name: Generate dashy docker_compose
+    template:
+      src: "docker_compose.j2"
+      dest: "{{docker_folder}}/{{dashy_container_name}}/docker-compose.yml"
+    notify: Restart {{dashy_container_name}} container
+
+  - name: Copy config if exist
+    copy:
+      src: "{{dashy_config_path}}"
+      dest: "{{docker_folder}}/{{dashy_container_name}}/conf.yml"
+      force: "{{dashy_config_force}}"
+    when: dashy_config_path is defined
+    notify: Restart {{dashy_container_name}} container
+
+  - name: Copy default config
+    copy:
+      src: "dashy_def.yml"
+      dest: "{{docker_folder}}/{{dashy_container_name}}/conf.yml"
+      force: false
+    when: dashy_config_path is not defined
+
+  - name: Generate dashy init
+    template:
+      src: "docker_compose_service.j2"
+      dest: "/etc/systemd/system/{{dashy_container_name}}.service"
+    notify: Restart {{dashy_container_name}} container
