@@ -1,0 +1,29 @@
+---
+# tasks file for Loki
+  - name: Creates Loki directory
+    file:
+      path: "{{item}}"
+      state: directory
+    loop:
+      - "{{docker_folder}}/{{Loki_container_name}}"
+
+  - name: Creates directory for store Loki data
+    file:
+      path: "{{item}}"
+      state: directory
+      owner: 10001
+      group: 10001
+    loop:
+      - "{{docker_folder}}/{{Loki_container_name}}/data"
+
+  - name: Generate Loki docker_compose
+    template:
+      src: "docker_compose.j2"
+      dest: "{{docker_folder}}/{{Loki_container_name}}/docker-compose.yml"
+    notify: Restart {{Loki_container_name}} container
+
+  - name: Generate Loki init
+    template:
+      src: "docker_compose_service.j2"
+      dest: "/etc/systemd/system/{{Loki_container_name}}.service"
+    notify: Restart {{Loki_container_name}} container

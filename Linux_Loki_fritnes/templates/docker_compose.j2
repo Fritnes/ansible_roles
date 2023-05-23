@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  loki:
+    image: grafana/loki:2.8.0
+    ports:
+      - "0.0.0.0:3100:3100"
+    volumes:
+    # directory must be created first, with uid:gid 10001:10001
+      - ./data:/loki
+    command: -config.file=/etc/loki/local-config.yaml

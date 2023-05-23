@@ -1,0 +1,8 @@
+---
+# handlers file for Loki
+  - name: Restart {{ Loki_container_name }} container
+    systemd:
+      state: restarted
+      enabled: yes
+      daemon_reload: yes
+      name: "{{ Loki_container_name }}"
