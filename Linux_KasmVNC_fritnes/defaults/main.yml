@@ -1,0 +1,5 @@
+---
+# defaults file for KasmVNC
+    kasmvnc_system_username: "kasm"
+    kasm_username: "kasm"
+    kasm_password: "kasm"

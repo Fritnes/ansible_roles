@@ -1,0 +1,71 @@
+---
+#https://github.com/kasmtech/KasmVNC/releases/download/v1.1.0/kasmvncserver_jammy_1.1.0_amd64.deb
+  - name: Download KasmVNC binary to local folder
+    become: false
+    get_url:
+      url: "https://github.com/kasmtech/KasmVNC/releases/download/v{{ kasmvnc_latest_releases }}/kasmvncserver_jammy_{{ kasmvnc_latest_releases }}_amd64.deb"
+      dest: "/tmp/kasmvncserver_jammy_{{ kasmvnc_latest_releases }}_amd64.deb"
+    register: _download_binary
+    until: _download_binary is succeeded
+    retries: 5
+    delay: 2
+    delegate_to: localhost
+    check_mode: false
+
+  - name: Propagate KasmVNC binaries
+    copy:
+      src: "/tmp/kasmvncserver_jammy_{{ kasmvnc_latest_releases }}_amd64.deb"
+      dest: "/tmp/kasmvncserver_jammy_{{ kasmvnc_latest_releases }}_amd64.deb"
+
+  - name: Install package
+    apt:
+      deb: /tmp/kasmvncserver_jammy_{{ kasmvnc_latest_releases }}_amd64.deb
+      state: present
+
+  - name: Install kde-plasma-desktop packages
+    apt:
+      update_cache: yes
+      cache_valid_time: 3600
+      name:
+       - kde-plasma-desktop
+      state: latest
+
+  - name: Add KasmVNC user
+    user:
+      name: "{{ kasmvnc_system_username }}"
+      state: "present"
+      createhome: "yes"
+
+  - name: Creates directory
+    file:
+      path: "{{item }}"
+      state: directory
+    loop:
+      - "/home/{{ kasmvnc_system_username }}/.vnc"
+
+  - name: Copy xstartup file to target machine
+    copy:
+      src: xstartup
+      dest: /home/{{ kasmvnc_system_username }}/.vnc/xstartup
+      owner: "{{ kasmvnc_system_username }}"
+      group: "{{ kasmvnc_system_username }}"
+      mode: "0755"
+
+  - name: Add user to group
+    user:
+      name: "{{ kasmvnc_system_username }}"
+      groups: ssl-cert
+      append: yes
+
+  - name: Run shell command as a special user
+    become_user: "{{ kasmvnc_system_username }}"
+    shell: 'echo -e "{{kasm_password}}\n{{kasm_password}}\n | vncpasswd -u {{kasm_password}} -w -r"'
+
+  - name: Copy the kasmvnc systemd service file
+    template:
+      src: kasmvnc.service.j2
+      dest: /etc/systemd/system/kasmvnc_{{ kasmvnc_system_username }}.service
+      owner: root
+      group: root
+      mode: 0644
+    notify: Restart kasmvnc

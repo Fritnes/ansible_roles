@@ -1,0 +1,8 @@
+---
+# handlers file for kasmvnc
+    - name: Restart kasmvnc
+      systemd:
+        state: restarted
+        enabled: yes
+        daemon_reload: yes
+        name: "kasmvnc_{{ kasmvnc_system_username }}.service"

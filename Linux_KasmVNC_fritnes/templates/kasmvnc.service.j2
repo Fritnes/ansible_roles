@@ -1,0 +1,13 @@
+[Unit]
+Description=Start KasmVNC server at startup
+After=network.target
+
+[Service]
+Type=forking
+User={{ kasmvnc_system_username }}
+Group={{ kasmvnc_system_username }}
+WorkingDirectory=/home/{{ kasmvnc_system_username }}
+ExecStart=vncserver
+
+[Install]
+WantedBy=multi-user.target

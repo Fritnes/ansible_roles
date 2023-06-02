@@ -1,0 +1,8 @@
+---
+# tasks file for KasmVNC
+  - import_tasks: check.yml
+    tags:
+      - check_kasmvnc
+
+  - import_tasks: install.yml
+    become: true
