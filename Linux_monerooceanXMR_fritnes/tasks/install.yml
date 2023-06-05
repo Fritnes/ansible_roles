@@ -14,20 +14,29 @@
 
   - name: Local untar
     become: false
-    shell: "rm -Rf /tmp/xmrig; mkdir /tmp/xmrig; tar xzf /tmp/xmrig-v{{xmrig_latest_releases}}-lin64.tar.gz -C /tmp/xmrig/"
+    shell: "mkdir -p /tmp/xmrig; tar xzf /tmp/xmrig-v{{xmrig_latest_releases}}-lin64.tar.gz -C /tmp/xmrig/"
     delegate_to: localhost
+    check_mode: false
+
+
+  - name: Creates directory
+    file:
+      path: "{{item }}"
+      state: directory
+    loop:
+      - "{{xmrig_directory}}"
 
   - name: Propagate xmrig binaries
     copy:
       src: "/tmp/xmrig/xmrig"
-      dest: "{{xmrig_directory}}"
+      dest: "{{xmrig_directory}}/"
       mode: 755
     notify: Restart xmrig
 
   - name: Propagate xmrig config
     copy:
       src: "/tmp/xmrig/config.json"
-      dest: "{{xmrig_directory}}"
+      dest: "{{xmrig_directory}}/"
     notify: Restart xmrig
 
   - name: Install packages
