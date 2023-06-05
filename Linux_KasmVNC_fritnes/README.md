@@ -6,3 +6,4 @@ Ansible role for install KasmVNC
   - [ ] arm
   - [ ] Debian
 - [ ] Disable screen locking
+- [ ] Add script for auto install soft

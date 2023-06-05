@@ -1,0 +1,8 @@
+---
+# tasks file for xmrig
+  - import_tasks: check.yml
+    tags:
+      - check_xmrig
+
+  - import_tasks: install.yml
+    become: true

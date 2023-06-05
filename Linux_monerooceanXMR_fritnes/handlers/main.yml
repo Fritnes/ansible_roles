@@ -1,0 +1,8 @@
+---
+# handlers file for xmrig
+    - name: Restart xmrig
+      systemd:
+        state: restarted
+        enabled: yes
+        daemon_reload: yes
+        name: "{{xmrig_systemd_name}}.service"

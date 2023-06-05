@@ -1,0 +1,48 @@
+---
+#https://github.com/MoneroOcean/xmrig/releases/download/v6.19.2-mo1/xmrig-v6.19.2-mo1-lin64.tar.gz
+  - name: Download xmrig binary to local folder
+    become: false
+    get_url:
+      url: "https://github.com/MoneroOcean/xmrig/releases/download/v{{xmrig_latest_releases}}/xmrig-v{{xmrig_latest_releases}}-lin64.tar.gz"
+      dest: "/tmp/xmrig-v{{xmrig_latest_releases}}-lin64.tar.gz"
+    register: _download_binary
+    until: _download_binary is succeeded
+    retries: 5
+    delay: 2
+    delegate_to: localhost
+    check_mode: false
+
+  - name: Local untar
+    become: false
+    shell: "rm -Rf /tmp/xmrig; mkdir /tmp/xmrig; tar xzf /tmp/xmrig-v{{xmrig_latest_releases}}-lin64.tar.gz -C /tmp/xmrig/"
+    delegate_to: localhost
+
+  - name: Propagate xmrig binaries
+    copy:
+      src: "/tmp/xmrig/xmrig"
+      dest: "{{xmrig_directory}}"
+      mode: 755
+    notify: Restart xmrig
+
+  - name: Propagate xmrig config
+    copy:
+      src: "/tmp/xmrig/config.json"
+      dest: "{{xmrig_directory}}"
+    notify: Restart xmrig
+
+  - name: Install packages
+    apt:
+      update_cache: yes
+      cache_valid_time: 3600
+      name:
+       - hwloc
+      state: latest
+
+  - name: Copy the xmrig systemd service file
+    template:
+      src: xmrig.service.j2
+      dest: /etc/systemd/system/{{xmrig_systemd_name}}.service
+      owner: root
+      group: root
+      mode: 0644
+    notify: Restart xmrig

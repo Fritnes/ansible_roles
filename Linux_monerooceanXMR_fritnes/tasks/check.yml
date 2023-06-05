@@ -1,0 +1,14 @@
+---
+  - name: Determine latest GitHub release (local)
+    delegate_to: localhost
+    become: false
+    uri:
+      url: "https://api.github.com/repos/MoneroOcean/xmrig/releases"
+      body_format: json
+    register: _github_releases
+    until: _github_releases.status == 200
+    retries: 5
+
+  - name: Set verison
+    set_fact:
+      xmrig_latest_releases: "{{ _github_releases.json.0.tag_name [1:] }}"

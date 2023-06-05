@@ -1,0 +1,10 @@
+[Unit]
+Description=Start {{xmrig_systemd_name}} server at startup
+After=network.target
+
+[Service]
+WorkingDirectory={{ xmrig_directory}}
+ExecStart={{ xmrig_directory}}/xmrig -o {{xmrig_mining_server}} -u {{xmrig_vollet}} -p {{xmrig_node_name}} --threads {{xmrig_node_threads}}
+
+[Install]
+WantedBy=multi-user.target

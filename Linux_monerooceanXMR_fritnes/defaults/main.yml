@@ -1,0 +1,8 @@
+---
+# defaults file for xmrig
+    xmrig_directory: "/etc/xmrig"
+    xmrig_systemd_name: "xmrig"
+    xmrig_vollet: ""
+    xmrig_node_name: "{{inventory_hostname}}"
+    xmrig_node_threads: "1"
+    xmrig_mining_server: "gulf.moneroocean.stream:10128"
