@@ -1,0 +1,46 @@
+---
+# tasks file for prometheus
+- name: Copy the prometheus systemd service file
+  template:
+    src: prometheus.service.j2
+    dest: /etc/systemd/system/{{prometheus_service_name}}.service
+    owner: root
+    group: root
+    mode: 0644
+  notify: Restart Prometheus
+
+- name: Copy prometheus config
+  copy:
+    src: "{{ prometheus_config_path }}"
+    dest: "{{ prometheus_folder }}/prometheus.yml"
+  notify: Restart Prometheus
+  when: (prometheus_config_path is defined) and (prometheus_config_path|length > 0)
+  register: host_prometheus_config
+
+- name: Check prometheus config
+  stat:
+    path: "{{ prometheus_folder }}/prometheus.yml"
+  register: path_prometheus_config_check
+
+- name: Copy default config
+  template:
+    src: prometheus.yml.j2
+    dest: "{{ prometheus_folder }}/prometheus.yml"
+    owner: "{{ prometheus_user }}"
+    group: "{{ prometheus_user }}"
+    mode: 0644
+  when: prometheus_config_path is not defined and not path_prometheus_config_check.stat.exists
+  notify: Restart Prometheus
+
+- name: Copy target lists
+  copy:
+    src: "{{ prometheus_target_path }}"
+    dest: "{{ prometheus_folder }}"
+  when: (prometheus_target_path is defined) and (prometheus_target_path|length > 0)
+
+- name: Copy alert rules
+  copy:
+    src: "{{ prometheus_alert_path }}"
+    dest: "{{ prometheus_folder }}"
+  when: (prometheus_alert_path is defined) and (prometheus_alert_path|length > 0)
+  notify: Restart Prometheus

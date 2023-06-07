@@ -1,0 +1,30 @@
+---
+
+  - name: Check if prometheus is installed
+    stat:
+      path: "{{ prometheus_folder }}/prometheus"
+    register: __prometheus_is_installed
+    check_mode: false
+
+  - name: Gather currently installed prometheus version (if any)
+    command: "{{ prometheus_folder }}/prometheus --version"
+    args:
+      warn: false
+    changed_when: false
+    register: __prometheus_current_releases
+    check_mode: false
+    when: __prometheus_is_installed.stat.exists
+
+  - name: Determine latest GitHub release (local)
+    delegate_to: localhost
+    become: false
+    uri:
+      url: "https://api.github.com/repos/prometheus/prometheus/releases"
+      body_format: json
+    register: _github_releases
+    until: _github_releases.status == 200
+    retries: 5
+
+  - name: Set verison
+    set_fact:
+      prometheus_latest_releases: "{{ _github_releases.json.0.tag_name [1:] }}"

@@ -1,0 +1,16 @@
+---
+# tasks file for node_exporter
+  - import_tasks: check.yml
+    tags:
+      - check_prometheus
+
+  - import_tasks: install.yml
+    become: true
+    when:
+      ( not __prometheus_is_installed.stat.exists ) or
+      ( (__prometheus_current_releases.stdout_lines | length > 0) and  (__prometheus_current_releases.stdout_lines[0].split(" ")[2] != prometheus_latest_releases ) ) or
+      ( (__prometheus_current_releases.stderr_lines | length > 0) and  (__prometheus_current_releases.stderr_lines[0].split(" ")[2] != prometheus_latest_releases ) )
+
+  - import_tasks: config.yml
+
+  - import_tasks: grafana.yml
