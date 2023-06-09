@@ -3,8 +3,9 @@
   - name: Download KasmVNC binary to local folder
     become: false
     get_url:
-      url: "https://github.com/kasmtech/KasmVNC/releases/download/v{{ kasmvnc_latest_releases }}/kasmvncserver_jammy_{{ kasmvnc_latest_releases }}_amd64.deb"
-      dest: "/tmp/kasmvncserver_jammy_{{ kasmvnc_latest_releases }}_amd64.deb"
+      #url: "https://github.com/kasmtech/KasmVNC/releases/download/v{{ kasmvnc_latest_releases }}/kasmvncserver_jammy_{{ kasmvnc_latest_releases }}_amd64.deb"
+      url: "https://github.com/kasmtech/KasmVNC/releases/download/v{{ kasmvnc_latest_releases }}/kasmvncserver_{{ansible_distribution_release}}_{{ kasmvnc_latest_releases }}_{{kasmvnc_architecture}}.deb"
+      dest: "/tmp/kasmvncserver_{{ansible_distribution_release}}_{{ kasmvnc_latest_releases }}_{{kasmvnc_architecture}}.deb"
     register: _download_binary
     until: _download_binary is succeeded
     retries: 5
@@ -14,12 +15,12 @@
 
   - name: Propagate KasmVNC binaries
     copy:
-      src: "/tmp/kasmvncserver_jammy_{{ kasmvnc_latest_releases }}_amd64.deb"
-      dest: "/tmp/kasmvncserver_jammy_{{ kasmvnc_latest_releases }}_amd64.deb"
+      src: "/tmp/kasmvncserver_{{ansible_distribution_release}}_{{ kasmvnc_latest_releases }}_{{kasmvnc_architecture}}.deb"
+      dest: "/tmp/kasmvncserver_{{ansible_distribution_release}}_{{ kasmvnc_latest_releases }}_{{kasmvnc_architecture}}.deb"
 
   - name: Install package
     apt:
-      deb: /tmp/kasmvncserver_jammy_{{ kasmvnc_latest_releases }}_amd64.deb
+      deb: /tmp/kasmvncserver_{{ansible_distribution_release}}_{{ kasmvnc_latest_releases }}_{{kasmvnc_architecture}}.deb
       state: present
 
   - name: Install kde-plasma-desktop packages
@@ -28,6 +29,7 @@
       cache_valid_time: 3600
       name:
        - kde-plasma-desktop
+       - plasma-workspace-wayland
       state: latest
 
   - name: Add KasmVNC user
@@ -40,6 +42,8 @@
     file:
       path: "{{item }}"
       state: directory
+      owner: "{{ kasmvnc_system_username }}"
+      group: "{{ kasmvnc_system_username }}"
     loop:
       - "/home/{{ kasmvnc_system_username }}/.vnc"
 
@@ -59,7 +63,8 @@
 
   - name: Run shell command as a special user
     become_user: "{{ kasmvnc_system_username }}"
-    shell: 'echo -e "{{kasm_password}}\n{{kasm_password}}\n | vncpasswd -u {{kasm_password}} -w -r"'
+    shell: 'echo "{{kasm_password}}\n{{kasm_password}}\n" | vncpasswd -u {{kasm_username}} -w -r /home/{{ kasmvnc_system_username }}/.kasmpasswd'
+    tags: test
 
   - name: Copy the kasmvnc systemd service file
     template:

@@ -6,3 +6,7 @@
         enabled: yes
         daemon_reload: yes
         name: "kasmvnc_{{ kasmvnc_system_username }}.service"
+
+    - name: Install soft
+      shell: "/opt/soft.sh"
+      ignore_errors: yes

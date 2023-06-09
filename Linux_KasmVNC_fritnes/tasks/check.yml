@@ -12,3 +12,13 @@
   - name: Set verison
     set_fact:
       kasmvnc_latest_releases: "{{ _github_releases.json.0.tag_name [1:] }}"
+
+  - name: Check architecture
+    set_fact:
+      kasmvnc_architecture: "amd64"
+    when: ansible_architecture == "x86_64"
+
+  - name: Check architecture
+    set_fact:
+      kasmvnc_architecture: "arm64"
+    when: ansible_architecture == "aarch64"

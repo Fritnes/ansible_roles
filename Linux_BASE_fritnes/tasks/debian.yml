@@ -41,22 +41,6 @@
           state: latest
         when: VM and HYPERVISOR == "VMware"
 
-      - name: Remove package file
-        apt:
-          name:
-          - snapd
-          purge: yes
-          state: absent
-
-      - name: Removing snapd files
-        file:
-          path: "{{ item }}"
-          state: absent
-        loop:
-          - /snap
-          - /var/snap
-          - /var/lib/snapd
-
       - name: Change resolved.conf
         lineinfile:
           dest: /etc/systemd/resolved.conf

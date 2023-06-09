@@ -10,4 +10,5 @@ if [ -f /etc/X11/xinit/xinitrc ]; then
   exec sh /etc/X11/xinit/xinitrc
 fi
 [ -r $HOME/.Xresources ] && xrdb $HOME/.Xresources
-startplasma-x11
+#startplasma-x11
+startplasma-wayland
