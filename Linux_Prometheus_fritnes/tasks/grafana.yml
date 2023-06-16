@@ -22,12 +22,13 @@
       force_apt_get: yes
       cache_valid_time: 3600
 
-  - name: Install useful packages
+  - name: Install grafana package
     apt:
       update_cache: yes
       cache_valid_time: 3600
       name:
         - grafana
       state: latest
+    notify: Restart Grafana
 
   when: ansible_os_family == "Debian"

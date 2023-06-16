@@ -6,3 +6,10 @@
         enabled: yes
         daemon_reload: yes
         name: "{{ prometheus_service_name }}"
+
+    - name: Restart Grafana
+      systemd:
+        state: restarted
+        enabled: yes
+        daemon_reload: yes
+        name: "grafana-server"

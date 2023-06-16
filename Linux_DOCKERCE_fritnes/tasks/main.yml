@@ -32,8 +32,9 @@
       - docker-ce
       - docker-ce-cli
       - containerd.io
+      - docker-compose-plugin
     notify: Restart docker
 
-  - name: Install bottle python package
-    pip:
-      name: docker-compose
+#  - name: Install bottle python package
+#    pip:
+#      name: docker-compose

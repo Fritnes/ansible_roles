@@ -7,7 +7,7 @@ After=network-online.target
 User={{ prometheus_user }}
 WorkingDirectory={{ prometheus_folder }}
 ExecStart={{ prometheus_folder }}/prometheus \
-        --config.file={{ prometheus_folder }}/prometheus.yml \
+        --config.file={{ prometheus_folder }}/config/prometheus.yml \
         --storage.tsdb.path={{ prometheus_storage_tsdb_path }} \
         --storage.tsdb.retention={{ prometheus_storage_tsdb_retention }} \
         --web.enable-admin-api

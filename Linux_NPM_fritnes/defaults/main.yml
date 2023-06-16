@@ -1,0 +1,4 @@
+---
+# defaults file for NPM
+docker_folder: "/opt"
+npm_container_name: "npm"
