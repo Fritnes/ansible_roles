@@ -1,5 +1,5 @@
 ---
-# defaults file for NodeExporter
+# defaults file for prometheus
     arch: "amd64"
     monitoring_tools_folder: "/opt/monitoring_tools"
     prometheus_user: "prometheus"

@@ -9,7 +9,7 @@
     mode: 0644
   notify: Restart Prometheus
 
-- name: Clone a private repository into {{PROJECT_NAME}} folder.
+- name: Clone a private repository into config folder.
   git:
     repo: "{{ prometheus_config_git_repo }}"
     version: "{{ prometheus_config_git_branch }}"

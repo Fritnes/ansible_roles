@@ -1,20 +1,26 @@
 ---
-# tasks file for dockerTMP
-  - name: Creates dockerTMP directory
+# tasks file for blackbox_exporter
+  - name: Creates blackbox_exporter directory
     file:
       path: "{{item }}"
       state: directory
     loop:
-      - "{{docker_folder}}/{{dockerTMP_container_name}}"
+      - "{{docker_folder}}/{{blackbox_exporter_container_name}}"
+      - "{{docker_folder}}/{{blackbox_exporter_container_name}}/conf"
 
-  - name: Generate dockerTMP docker_compose
+  - name: Copy config.yml
+    copy:
+      src: config.yml
+      dest: "{{docker_folder}}/{{blackbox_exporter_container_name}}/conf/config.yml"
+
+  - name: Generate blackbox_exporter docker_compose
     template:
       src: "docker_compose.j2"
-      dest: "{{docker_folder}}/{{dockerTMP_container_name}}/docker-compose.yml"
-    notify: Restart {{dockerTMP_container_name}} container
+      dest: "{{docker_folder}}/{{blackbox_exporter_container_name}}/docker-compose.yml"
+    notify: Restart {{blackbox_exporter_container_name}} container
 
-  - name: Generate dockerTMP init
+  - name: Generate blackbox_exporter init
     template:
       src: "docker_compose_service.j2"
-      dest: "/etc/systemd/system/{{dockerTMP_container_name}}.service"
-    notify: Restart {{dockerTMP_container_name}} container
+      dest: "/etc/systemd/system/{{blackbox_exporter_container_name}}.service"
+    notify: Restart {{blackbox_exporter_container_name}} container

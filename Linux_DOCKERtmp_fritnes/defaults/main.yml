@@ -1,4 +1,5 @@
 ---
-# defaults file for dockerTMP
+# defaults file for blackbox_exporter
 docker_folder: "/opt"
-pihole_container_name: "dockerTMP"
+blackbox_exporter_container_name: "blackbox_exporter"
+blackbox_exporter_container_port: "127.0.0.1:9115"

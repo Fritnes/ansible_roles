@@ -1,0 +1,4 @@
+---
+# defaults file for dockerTMP
+docker_folder: "/opt"
+pihole_container_name: "dockerTMP"

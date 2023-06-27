@@ -1,0 +1,8 @@
+---
+# handlers file for dockerTMP
+  - name: Restart {{ dockerTMP_container_name }} container
+    systemd:
+      state: restarted
+      enabled: yes
+      daemon_reload: yes
+      name: "{{ dockerTMP_container_name }}"
