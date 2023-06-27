@@ -1,8 +1,0 @@
-version: '3.3'
-  blackbox-exporterip:
-    image: prom/blackbox-exporter:master
-    volumes:
-    - ./conf/:/etc/blackbox_exporter/
-    network_mode: host
-    ports:
-    - "{{blackbox_exporter_container_port}}:9115"
