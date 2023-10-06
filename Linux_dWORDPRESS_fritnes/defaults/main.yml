@@ -1,0 +1,6 @@
+---
+# defaults file for dwordpress
+docker_folder: "/opt"
+dwordpress_container_name: "dwordpress"
+dwordpress_port: "8080"
+dwordpress_db_password: "password"

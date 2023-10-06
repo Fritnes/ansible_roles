@@ -1,0 +1,8 @@
+---
+# handlers file for dwordpress
+  - name: Restart {{ dwordpress_container_name }} container
+    systemd:
+      state: restarted
+      enabled: yes
+      daemon_reload: yes
+      name: "{{ dwordpress_container_name }}"
