@@ -8,8 +8,8 @@
 
   - name: Gather currently installed prometheus version (if any)
     command: "{{ prometheus_folder }}/prometheus --version"
-    args:
-      warn: false
+    #args:
+    #  warn: false
     changed_when: false
     register: __prometheus_current_releases
     check_mode: false
