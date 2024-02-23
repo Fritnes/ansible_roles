@@ -8,8 +8,8 @@
 
   - name: Gather currently installed node_exporter version (if any)
     command: "{{ node_exporter_folder }}/node_exporter --version"
-    args:
-      warn: false
+    #args:
+    #  warn: false
     changed_when: false
     register: __node_exporter_current_releases
     check_mode: false
