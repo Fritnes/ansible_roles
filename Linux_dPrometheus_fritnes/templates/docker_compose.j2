@@ -1,0 +1,15 @@
+version: '3'
+services:
+  prometheus:
+    image: prom/prometheus
+    network_mode: host
+    volumes:
+      - "./prom_config/alert_rules:/etc/prometheus/alert_rules"
+      - "./prom_config/targets_lists:/etc/prometheus/targets_lists"
+      - "./prom_config/prometheus.yml:/etc/prometheus/prometheus.yml"
+      - "{{prometheus_storage_tsdb_path}}:/etc/prometheus/data"
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/etc/prometheus/data"
+      - "--storage.tsdb.retention.time={{prometheus_storage_tsdb_retention}}"
+      - "--web.enable-admin-api"

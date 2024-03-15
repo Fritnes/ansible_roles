@@ -1,0 +1,25 @@
+---
+# tasks file for prometheus
+  - name: Creates prometheus directory
+    file:
+      path: "{{item }}"
+      state: directory
+    loop:
+      - "{{docker_folder}}/{{prometheus_container_name}}"
+
+  - name: Creates prometheus data directory
+    file:
+      path: "{{item}}"
+      owner: "nobody"
+      group: "nogroup"
+      state: directory
+    loop:
+      - "{{prometheus_storage_tsdb_path}}"
+
+  - name: Generate prometheus docker_compose
+    template:
+      src: "docker_compose.j2"
+      dest: "{{docker_folder}}/{{prometheus_container_name}}/docker-compose.yml"
+    notify: Restart {{prometheus_container_name}} container
+
+  - import_tasks: config.yml

@@ -1,0 +1,7 @@
+---
+# defaults file for prometheus
+docker_folder: "/opt"
+prometheus_container_name: "prometheus"
+#prometheus_container_port: "127.0.0.1:9115"
+prometheus_storage_tsdb_path: "/opt/prometheus/data"
+prometheus_storage_tsdb_retention: "360d"

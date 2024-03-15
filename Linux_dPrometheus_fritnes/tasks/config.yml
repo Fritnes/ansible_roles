@@ -1,0 +1,23 @@
+---
+# tasks file for prometheus
+- name: Clone a private repository into config folder.
+  git:
+    repo: "{{ prometheus_config_git_repo }}"
+    version: "{{ prometheus_config_git_branch }}"
+    dest: "/tmp/prom_config"
+    accept_hostkey: yes
+  become: no
+  delegate_to: localhost
+
+- name: Propagate prometheus config folder
+  copy:
+    src: "/tmp/prom_config/"
+    dest: "{{docker_folder}}/{{prometheus_container_name}}/prom_config/"
+  notify: Restart {{ prometheus_container_name }} container
+
+- name: Creates directory
+  file:
+    path: "{{item}}"
+    state: directory
+  loop:
+    - "{{prometheus_storage_tsdb_path}}"
