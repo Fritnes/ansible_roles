@@ -1,7 +1,7 @@
 ---
 #Task for debian based
-      - name: dpkg
-        shell: dpkg --configure -a
+      #- name: dpkg
+      #  shell: dpkg --configure -a
 
       - name: Gather Package facts
         package_facts:
