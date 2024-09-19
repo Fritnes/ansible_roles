@@ -1,7 +1,8 @@
-version: '3'
 services:
   prometheus:
-    image: prom/prometheus
+    image: prom/prometheus:{{prometheus_version}}
+    container_name: prometheus
+    restart: unless-stopped
     network_mode: host
     volumes:
       - "./prom_config/alert_rules:/etc/prometheus/alert_rules"
@@ -13,3 +14,15 @@ services:
       - "--storage.tsdb.path=/etc/prometheus/data"
       - "--storage.tsdb.retention.time={{prometheus_storage_tsdb_retention}}"
       - "--web.enable-admin-api"
+
+  grafana:
+    image: grafana/grafana:{{grafana_version}}
+    container_name: grafana
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD={{grafana_admin_password}}
+    volumes:
+      - ./grafana_data/:/var/lib/grafana
+    depends_on:
+      - prometheus

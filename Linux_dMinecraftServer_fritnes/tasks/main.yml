@@ -1,0 +1,13 @@
+---
+# tasks file for MinecraftServer
+  - name: Creates MinecraftServer directory
+    file:
+      path: "{{item }}"
+      state: directory
+    loop:
+      - "{{docker_folder}}/{{MinecraftServer_container_name}}"
+
+  - name: Generate MinecraftServer docker_compose
+    template:
+      src: "docker_compose.j2"
+      dest: "{{docker_folder}}/{{MinecraftServer_container_name}}/docker-compose.yml"
