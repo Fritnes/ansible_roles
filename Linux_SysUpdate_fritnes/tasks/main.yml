@@ -4,9 +4,9 @@
     setup:
       
   - name: Dependonsi Debian
-    include: "debian.yml"
+    include_tasks: "debian.yml"
     when: ansible_os_family == "Debian"
 
   - name: Dependonsi RedHat
-    include: "redhat.yml"
+    include_tasks: "redhat.yml"
     when: ansible_os_family == "RedHat" or ansible_os_family == "Rocky"
