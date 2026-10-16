@@ -34,4 +34,4 @@
     - "e2scrub_all.timer"
 
 - name: Dependonsi Debian
-  include: "smb.yml"
+  include_tasks: "smb.yml"

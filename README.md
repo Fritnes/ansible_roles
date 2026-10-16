@@ -9,6 +9,7 @@ Clone the repository and use its root as the roles path:
 ```sh
 git clone https://github.com/fritnes/ansible_roles.git
 cd ansible_roles
+ansible-galaxy collection install -r requirements.yml
 ansible-playbook -i /path/to/inventory /path/to/site.yml
 ```
 

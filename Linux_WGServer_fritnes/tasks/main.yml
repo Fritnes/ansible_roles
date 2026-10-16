@@ -42,7 +42,7 @@
     notify: Restart {{wggui_container_name}} container
 
   - name: Ip forward
-    sysctl:
+    ansible.posix.sysctl:
       name: net.ipv4.ip_forward
       value: '1'
       state: present
