@@ -1,0 +1,18 @@
+---
+galaxy_info:
+  author: fritnes
+  description: Configure a WPA2 wireless access point with Hostapd
+  min_ansible_version: '2.10'
+  platforms:
+    - name: Debian
+      versions:
+        - bookworm
+    - name: Ubuntu
+      versions:
+        - jammy
+        - noble
+  galaxy_tags:
+    - hostapd
+    - wireless
+
+dependencies: []

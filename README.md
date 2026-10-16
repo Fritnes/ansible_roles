@@ -24,6 +24,7 @@ The included `ansible.cfg` sets `roles_path` to this repository. Set secret valu
 | `Linux_DOCKERCE_fritnes` | Docker CE installation |
 | `Linux_DOCKERtmp_fritnes` | Docker Compose service scaffold |
 | `Linux_Dashy_fritnes` | Dashy container |
+| `Linux_HOSTAPD_fritnes` | Hostapd wireless access point |
 | `Linux_dMinecraftServer_fritnes` | Minecraft server container |
 | `Linux_dPrometheus_fritnes` | Prometheus and Grafana containers |
 | `Linux_dWORDPRESS_fritnes` | WordPress and MariaDB containers |
@@ -58,7 +59,7 @@ Container roles require a numeric version tag or SHA-256 image digest, rather th
 | WordPress and MariaDB | `dwordpress_wordpress_image`, `dwordpress_mariadb_image` |
 | WireGuard UI | `wgui_image` |
 
-Supply unique secrets of at least 16 characters for `grafana_admin_password`, `dwordpress_db_password`, `WGUI_PASSWORD`, and `kasm_password`. Store them in Ansible Vault. Compose files containing secrets are written with mode `0600`.
+Supply unique secrets of at least 16 characters for `grafana_admin_password`, `dwordpress_db_password`, `WGUI_PASSWORD`, and `kasm_password`; `hostapd_wpa_passphrase` must be 8-63 printable ASCII characters and `hostapd_country_code` a two-letter uppercase ISO code. Store secrets in Ansible Vault. Compose files and the Hostapd configuration containing secrets are written with mode `0600`.
 
 In `Linux_Users_fritnes`, passwordless wheel sudo and home-directory deletion are disabled by default. Set `passwordless_sudo_wheel: true` or `delete_user_home: true` only when explicitly intended. Jenkins Docker socket access is disabled by default; enabling it grants jobs host-level control, and requires `jenkins_docker_gid`.
 

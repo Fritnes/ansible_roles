@@ -1,0 +1,8 @@
+---
+hostapd_interface: wlan0
+hostapd_driver: nl80211
+hostapd_ssid: hostapd
+hostapd_country_code: ""
+hostapd_hw_mode: g
+hostapd_channel: '11'
+hostapd_wpa_passphrase: ""

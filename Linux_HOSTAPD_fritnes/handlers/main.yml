@@ -1,0 +1,5 @@
+---
+- name: Restart Hostapd
+  ansible.builtin.systemd:
+    name: hostapd
+    state: restarted
