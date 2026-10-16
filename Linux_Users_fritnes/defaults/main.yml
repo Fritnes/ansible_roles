@@ -2,3 +2,5 @@
 # defaults file for users
 allow_ssh_password: "false"
 students_allow: "false"
+passwordless_sudo_wheel: false
+delete_user_home: false

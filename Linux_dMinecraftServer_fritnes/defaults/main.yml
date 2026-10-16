@@ -2,3 +2,4 @@
 # defaults file for MinecraftServer
 MinecraftServer_folder: "/opt"
 MinecraftServer_container_name: "MinecraftServer"
+MinecraftServer_image: ""

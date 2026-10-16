@@ -7,3 +7,4 @@
   file:
     path: "/home/{{ item }}"
     state: "absent"
+  when: delete_user_home | bool

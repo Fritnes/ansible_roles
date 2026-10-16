@@ -5,13 +5,28 @@
     name: wheel
     state: present
 
-- name: Allow 'wheel' group to have passwordless sudo
+- name: Remove legacy passwordless wheel rule
   lineinfile:
     dest: /etc/sudoers
-    state: present
-    regexp: '^%wheel'
-    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+    state: absent
+    regexp: '^%wheel ALL=\(ALL\) NOPASSWD: ALL$'
     validate: 'visudo -cf %s'
+
+- name: Configure passwordless sudo for wheel
+  copy:
+    content: "%wheel ALL=(ALL) NOPASSWD: ALL\n"
+    dest: /etc/sudoers.d/ansible-wheel
+    owner: root
+    group: root
+    mode: '0440'
+    validate: 'visudo -cf %s'
+  when: passwordless_sudo_wheel | bool
+
+- name: Remove passwordless sudo drop-in when disabled
+  file:
+    path: /etc/sudoers.d/ansible-wheel
+    state: absent
+  when: not (passwordless_sudo_wheel | bool)
 
 - name: SSHD
   lineinfile:
@@ -36,7 +51,7 @@
 
 - name: ADD Users
   include_tasks: add_users.yml
-  loop: "{{ users }}"
+  loop: "{{ users | default([], true) }}"
 
 - name: ADD students
   include_tasks: student_users.yml

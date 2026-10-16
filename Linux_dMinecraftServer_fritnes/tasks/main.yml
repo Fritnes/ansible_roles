@@ -1,13 +1,19 @@
 ---
 # tasks file for MinecraftServer
+  - name: Require a pinned Minecraft server image
+    assert:
+      that:
+        - MinecraftServer_image is match('^.+(:v?[0-9][A-Za-z0-9_.-]*|@sha256:[a-f0-9]{64})$')
+      fail_msg: Set MinecraftServer_image to an explicit version tag or digest.
+
   - name: Creates MinecraftServer directory
     file:
       path: "{{item }}"
       state: directory
     loop:
-      - "{{docker_folder}}/{{MinecraftServer_container_name}}"
+      - "{{MinecraftServer_folder}}/{{MinecraftServer_container_name}}"
 
   - name: Generate MinecraftServer docker_compose
     template:
       src: "docker_compose.j2"
-      dest: "{{docker_folder}}/{{MinecraftServer_container_name}}/docker-compose.yml"
+      dest: "{{MinecraftServer_folder}}/{{MinecraftServer_container_name}}/docker-compose.yml"

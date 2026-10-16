@@ -1,0 +1,27 @@
+---
+- name: Syntax-check all repository roles
+  hosts: all
+  gather_facts: false
+  roles:
+    - Linux_BASE_fritnes
+    - Linux_BlackboxExporter_fritnes
+    - Linux_DOCKERCE_fritnes
+    - Linux_DOCKERtmp_fritnes
+    - Linux_Dashy_fritnes
+    - Linux_dMinecraftServer_fritnes
+    - Linux_dPrometheus_fritnes
+    - Linux_dWORDPRESS_fritnes
+    - Linux_Jenkins_fritnes
+    - Linux_KasmVNC_fritnes
+    - Linux_Loki_fritnes
+    - Linux_MALTRAIL_fritnes
+    - Linux_monerooceanXMR_fritnes
+    - Linux_NFtables_fritnes
+    - Linux_NodeExporter_fritnes
+    - Linux_NPM_fritnes
+    - Linux_PROXMOX_fritnes
+    - Linux_SysUpdate_fritnes
+    - Linux_Users_fritnes
+    - Linux_WGClient_fritnes
+    - Linux_WGServer_fritnes
+    - RP_Store_fritnes

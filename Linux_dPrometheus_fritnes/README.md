@@ -16,6 +16,9 @@ Playbook example
   vars:
     prometheus_config_git_repo: 
     prometheus_config_git_branch: 
+    prometheus_image: "prom/prometheus:vX.Y.Z" # Replace with a pinned tag or digest
+    grafana_image: "grafana/grafana:vX.Y.Z" # Replace with a pinned tag or digest
+    grafana_admin_password: "{{ vault_grafana_admin_password }}"
 
   tasks:
     - name: Base

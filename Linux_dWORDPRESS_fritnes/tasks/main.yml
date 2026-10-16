@@ -1,5 +1,13 @@
 ---
 # tasks file for dwordpress
+  - name: Validate WordPress database password
+    assert:
+      that:
+        - dwordpress_db_password | length >= 16
+        - dwordpress_wordpress_image is match('^.+(:v?[0-9][A-Za-z0-9_.-]*|@sha256:[a-f0-9]{64})$')
+        - dwordpress_mariadb_image is match('^.+(:v?[0-9][A-Za-z0-9_.-]*|@sha256:[a-f0-9]{64})$')
+      fail_msg: Set a unique database password and pinned WordPress and MariaDB image references.
+
   - name: Creates dwordpress directory
     file:
       path: "{{ item }}"
@@ -11,6 +19,7 @@
     template:
       src: "docker_compose.j2"
       dest: "{{docker_folder}}/{{dwordpress_container_name}}/docker-compose.yml"
+      mode: '0600'
     notify: Restart {{dwordpress_container_name}} container
 
   - name: Generate dwordpress init

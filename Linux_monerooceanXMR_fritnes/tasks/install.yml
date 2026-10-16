@@ -45,7 +45,7 @@
       cache_valid_time: 3600
       name:
        - hwloc
-      state: latest
+      state: present
 
   - name: Copy the xmrig systemd service file
     template:

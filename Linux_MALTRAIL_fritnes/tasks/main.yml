@@ -8,7 +8,7 @@
     - git
     - python3-pcapy
     - python3-setuptools
-    state: latest
+    state: present
 
 - name: Clone a github repository
   git:

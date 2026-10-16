@@ -1,7 +1,7 @@
 version: '{{version}}'
 services:
   {{wggui_container_name}}:
-    image: ngoduykhanh/wireguard-ui:latest
+    image: {{wgui_image}}
     container_name: {{wggui_container_name}}
     cap_add:
       - NET_ADMIN

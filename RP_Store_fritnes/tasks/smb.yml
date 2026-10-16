@@ -6,7 +6,7 @@
     - samba
     - smbclient
     - cifs-utils
-    state: latest
+    state: present
 
 - name: Ensure group "somegroup" exists
   ansible.builtin.group:

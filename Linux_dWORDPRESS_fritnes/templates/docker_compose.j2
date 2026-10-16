@@ -1,6 +1,6 @@
 services:
   wordpress:
-      image: wordpress
+      image: {{dwordpress_wordpress_image}}
       links:
         - mariadb:mysql
       environment:
@@ -11,7 +11,7 @@ services:
       volumes:
        - ./html:/var/www/html
   mariadb:
-      image: mariadb
+      image: {{dwordpress_mariadb_image}}
       environment:
        - MYSQL_ROOT_PASSWORD={{dwordpress_db_password}}
        - MYSQL_DATABASE=wordpress

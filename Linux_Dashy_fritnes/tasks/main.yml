@@ -1,5 +1,11 @@
 ---
 # tasks file for dashy
+  - name: Require a pinned Dashy image
+    assert:
+      that:
+        - dashy_image is match('^.+(:v?[0-9][A-Za-z0-9_.-]*|@sha256:[a-f0-9]{64})$')
+      fail_msg: Set dashy_image to an explicit version tag or digest.
+
   - name: Creates dashy directory
     file:
       path: "{{item }}"

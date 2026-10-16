@@ -1,5 +1,13 @@
 ---
 # tasks file for prometheus
+  - name: Validate Grafana credentials
+    assert:
+      that:
+        - grafana_admin_password | length >= 16
+        - prometheus_image is match('^.+(:v?[0-9][A-Za-z0-9_.-]*|@sha256:[a-f0-9]{64})$')
+        - grafana_image is match('^.+(:v?[0-9][A-Za-z0-9_.-]*|@sha256:[a-f0-9]{64})$')
+      fail_msg: Set a unique Grafana password and pinned Prometheus and Grafana image references.
+
   - name: Creates prometheus directory
     file:
       path: "{{item }}"
@@ -20,6 +28,7 @@
     template:
       src: "docker_compose.j2"
       dest: "{{docker_folder}}/{{prometheus_container_name}}/docker-compose.yml"
+      mode: '0600'
     notify: Restart {{prometheus_container_name}} container
 
   - import_tasks: config.yml

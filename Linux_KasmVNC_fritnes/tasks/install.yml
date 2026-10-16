@@ -30,7 +30,7 @@
       name:
        - kde-plasma-desktop
        - plasma-workspace-wayland
-      state: latest
+      state: present
 
   - name: Add KasmVNC user
     user:
@@ -63,7 +63,16 @@
 
   - name: Run shell command as a special user
     become_user: "{{ kasmvnc_system_username }}"
-    shell: 'echo "{{kasm_password}}\n{{kasm_password}}\n" | vncpasswd -u {{kasm_username}} -w -r /home/{{ kasmvnc_system_username }}/.kasmpasswd'
+    command:
+      argv:
+        - vncpasswd
+        - -u
+        - "{{ kasm_username }}"
+        - -w
+        - -r
+        - "/home/{{ kasmvnc_system_username }}/.kasmpasswd"
+      stdin: "{{ kasm_password }}\n{{ kasm_password }}\n"
+    no_log: true
     tags: test
 
   - name: Copy the kasmvnc systemd service file

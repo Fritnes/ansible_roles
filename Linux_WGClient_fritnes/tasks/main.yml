@@ -5,7 +5,7 @@
     name:
     - wireguard
     - resolvconf
-    state: latest
+    state: present
 
 - name: Generate conf
   copy:

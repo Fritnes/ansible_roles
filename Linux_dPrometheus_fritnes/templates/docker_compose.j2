@@ -1,6 +1,6 @@
 services:
   prometheus:
-    image: prom/prometheus:{{prometheus_version}}
+    image: {{prometheus_image}}
     container_name: prometheus
     restart: unless-stopped
     network_mode: host
@@ -16,7 +16,7 @@ services:
       - "--web.enable-admin-api"
 
   grafana:
-    image: grafana/grafana:{{grafana_version}}
+    image: {{grafana_image}}
     container_name: grafana
     restart: unless-stopped
     network_mode: host

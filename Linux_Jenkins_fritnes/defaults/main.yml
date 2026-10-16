@@ -3,3 +3,6 @@
 docker_folder: "/opt"
 version: "3.7"
 jenkins_container_name: "jenkins"
+jenkins_image: ""
+jenkins_docker_socket_enabled: false
+jenkins_docker_gid: ""

@@ -1,5 +1,11 @@
 ---
 # tasks file for npm
+  - name: Require a pinned Nginx Proxy Manager image
+    assert:
+      that:
+        - npm_image is match('^.+(:v?[0-9][A-Za-z0-9_.-]*|@sha256:[a-f0-9]{64})$')
+      fail_msg: Set npm_image to an explicit version tag or digest.
+
   - name: Creates npm directory
     file:
       path: "{{item }}"

@@ -1,5 +1,18 @@
 ---
 # tasks file for jenkins
+  - name: Require Docker group ID when host socket access is enabled
+    assert:
+      that:
+        - jenkins_docker_gid | string | length > 0
+      fail_msg: Set jenkins_docker_gid to the host Docker socket group ID.
+    when: jenkins_docker_socket_enabled | bool
+
+  - name: Require a pinned Jenkins image
+    assert:
+      that:
+        - jenkins_image is match('^.+(:v?[0-9][A-Za-z0-9_.-]*|@sha256:[a-f0-9]{64})$')
+      fail_msg: Set jenkins_image to an explicit version tag or digest.
+
   - name: Create directorys
     file:
       path: "{{item }}"

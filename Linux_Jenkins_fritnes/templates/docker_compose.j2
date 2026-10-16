@@ -1,9 +1,8 @@
 version: '{{version}}'
 services:
   {{jenkins_container_name}}:
+    image: {{jenkins_image}}
     build: .
-    privileged: true
-    user: root
     environment:
       TZ: "Europe/Kiev"
     ports:
@@ -12,5 +11,9 @@ services:
     container_name: {{jenkins_container_name}}
     volumes:
       - ./jenkins_home:/var/jenkins_home
+{% if jenkins_docker_socket_enabled | bool %}
       - /var/run/docker.sock:/var/run/docker.sock
       - /usr/local/bin/docker:/usr/local/bin/docker
+    group_add:
+      - "{{ jenkins_docker_gid }}"
+{% endif %}

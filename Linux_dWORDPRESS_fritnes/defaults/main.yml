@@ -3,4 +3,6 @@
 docker_folder: "/opt"
 dwordpress_container_name: "dwordpress"
 dwordpress_port: "8080"
-dwordpress_db_password: "password"
+dwordpress_db_password: ""
+dwordpress_wordpress_image: ""
+dwordpress_mariadb_image: ""

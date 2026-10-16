@@ -28,7 +28,7 @@
     - zip
     - htop
     - lm-sensors
-    state: latest
+    state: present
 
 - name: Dependonsi Debian
   include: "f2b.yml"

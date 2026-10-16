@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   app:
-    image: 'jc21/nginx-proxy-manager:latest'
+    image: '{{npm_image}}'
     restart: unless-stopped
     ports:
       - '80:80' # Public HTTP Port

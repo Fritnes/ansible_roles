@@ -1,5 +1,12 @@
 ---
 # tasks file for AnsibleWIREGUARD
+  - name: Validate WireGuard UI credentials
+    assert:
+      that:
+        - WGUI_PASSWORD | length >= 16
+        - wgui_image is match('^.+(:v?[0-9][A-Za-z0-9_.-]*|@sha256:[a-f0-9]{64})$')
+      fail_msg: Set a unique WireGuard UI password and a version-tagged image or SHA-256 digest.
+
   - name: Install wireguard
     apt:
       name: wireguard
@@ -25,6 +32,7 @@
     template:
       src: "docker_compose.j2"
       dest: "{{docker_folder}}/{{wggui_container_name}}/docker-compose.yml"
+      mode: '0600'
     notify: Restart {{wggui_container_name}} container
 
   - name: Generate init

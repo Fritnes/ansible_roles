@@ -26,7 +26,7 @@ Ansible role for install KasmVNC
   vars:
     kasmvnc_system_username: "fritnes"
     kasm_username: "kasm"
-    kasm_password: "kasmkasmkasm"
+    kasm_password: "{{ vault_kasm_password }}"
 
   tasks:
     - name: Install kasmVNC

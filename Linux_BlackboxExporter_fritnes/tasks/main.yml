@@ -1,5 +1,11 @@
 ---
 # tasks file for blackbox_exporter
+  - name: Require a pinned Blackbox Exporter image
+    assert:
+      that:
+        - blackbox_exporter_image is match('^.+(:v?[0-9][A-Za-z0-9_.-]*|@sha256:[a-f0-9]{64})$')
+      fail_msg: Set blackbox_exporter_image to an explicit version tag or digest.
+
   - name: Creates blackbox_exporter directory
     file:
       path: "{{item }}"

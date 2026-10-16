@@ -27,20 +27,20 @@
           - zip
           - htop
           - screen
-          state: latest
+          state: present
 
       - name: Install qemu-guest-agent
         apt:
           name:
           - qemu-guest-agent
-          state: latest
+          state: present
         when: VM and HYPERVISOR == "KVM"
 
       - name: Install open-vm-tools
         apt:
           name:
           - open-vm-tools
-          state: latest
+          state: present
         when: VM and HYPERVISOR == "VMware"
 
       - name: Change resolved.conf
