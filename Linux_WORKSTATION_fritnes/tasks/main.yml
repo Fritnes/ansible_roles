@@ -1,0 +1,70 @@
+---
+- name: Ensure this role is running on Ubuntu
+  ansible.builtin.assert:
+    that:
+      - ansible_distribution == "Ubuntu"
+    fail_msg: Linux_WORKSTATION_fritnes requires Ubuntu because its repositories are Ubuntu PPAs.
+
+- name: Create APT keyring directory
+  ansible.builtin.file:
+    path: "{{ workstation_spotify_keyring | dirname }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  when: workstation_enable_spotify | bool
+
+- name: Download Spotify APT signing key
+  ansible.builtin.get_url:
+    url: "{{ workstation_spotify_key_url }}"
+    dest: "{{ workstation_spotify_keyring }}"
+    owner: root
+    group: root
+    mode: '0644'
+  when: workstation_enable_spotify | bool
+
+- name: Add workstation PPAs
+  ansible.builtin.apt_repository:
+    repo: "{{ item }}"
+    state: present
+    update_cache: false
+  loop: "{{ workstation_ppa_repositories }}"
+
+- name: Add Spotify APT repository
+  ansible.builtin.apt_repository:
+    repo: "{{ workstation_spotify_repository }}"
+    filename: spotify
+    state: present
+    update_cache: false
+  when: workstation_enable_spotify | bool
+
+- name: Update APT package cache
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Configure Firefox package pinning
+  ansible.builtin.copy:
+    src: mozilla-firefox
+    dest: "{{ workstation_firefox_preferences_path }}"
+    owner: root
+    group: root
+    mode: '0644'
+  when: workstation_manage_firefox_preferences | bool
+
+- name: Install workstation packages
+  ansible.builtin.apt:
+    name: "{{ workstation_packages }}"
+    state: present
+
+- name: Install Spotify
+  ansible.builtin.apt:
+    name: spotify-client
+    state: present
+  when: workstation_enable_spotify | bool
+
+- name: Upgrade all APT packages
+  ansible.builtin.apt:
+    upgrade: dist
+    update_cache: true
+  when: workstation_dist_upgrade | bool

@@ -1,0 +1,50 @@
+---
+workstation_ppa_repositories:
+  - ppa:lutris-team/lutris
+  - ppa:daniruiz/flat-remix
+  - ppa:phoerious/keepassxc
+  - ppa:libreoffice/ppa
+  - ppa:teejee2008/ppa
+  - ppa:remmina-ppa-team/remmina-next
+  - ppa:mozillateam/ppa
+
+workstation_packages:
+  - firefox
+  - synaptic
+  - elisa
+  - drawing
+  - krdc
+  - filezilla
+  - network-manager-strongswan
+  - strongswan
+  - libcharon-extra-plugins
+  - network-manager-openvpn
+  - virt-manager
+  - ssh-askpass-gnome
+  - gir1.2-spiceclientgtk-3.0
+  - traceroute
+  - net-tools
+  - nmap
+  - gnome-multi-writer
+  - gnome-disk-utility
+  - lutris
+  - flat-remix
+  - keepassxc
+  - libreoffice
+  - vlc
+  - thunderbird
+  - okular
+  - timeshift
+  - remmina
+  - remmina-plugin-rdp
+  - gparted
+
+workstation_enable_spotify: true
+workstation_spotify_key_url: https://download.spotify.com/debian/pubkey_5E3C45D7B312C643.gpg
+workstation_spotify_keyring: /etc/apt/keyrings/spotify.asc
+workstation_spotify_repository: "deb [signed-by=/etc/apt/keyrings/spotify.asc] https://repository.spotify.com stable non-free"
+
+workstation_manage_firefox_preferences: true
+workstation_firefox_preferences_path: /etc/apt/preferences.d/mozilla-firefox
+
+workstation_dist_upgrade: false

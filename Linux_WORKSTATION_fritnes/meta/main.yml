@@ -1,0 +1,15 @@
+---
+galaxy_info:
+  author: fritnes
+  description: Install workstation applications on Ubuntu
+  min_ansible_version: '2.10'
+  platforms:
+    - name: Ubuntu
+      versions:
+        - jammy
+        - noble
+  galaxy_tags:
+    - workstation
+    - ubuntu
+
+dependencies: []

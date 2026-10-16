@@ -40,6 +40,7 @@ The included `ansible.cfg` sets `roles_path` to this repository. Set secret valu
 | `Linux_Users_fritnes` | User and SSH management |
 | `Linux_WGClient_fritnes` | WireGuard client |
 | `Linux_WGServer_fritnes` | WireGuard UI server container |
+| `Linux_WORKSTATION_fritnes` | Ubuntu workstation applications |
 | `RP_Store_fritnes` | Samba file-share setup |
 
 ## Required Inputs
