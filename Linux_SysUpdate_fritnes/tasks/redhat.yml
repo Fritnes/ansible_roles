@@ -1,25 +1,25 @@
 ---
 # tasks file for linux-update
 - name: Enable EPEL Repository on CentOS 8
-  dnf:
+  ansible.builtin.dnf:
     name: epel-release
-    state: latest
+    state: present
   when: ansible_facts ['distribution_major_version'] >= '8'
 
-- name: Enable EPEL Repository on CentOS 7
-  yum:
+- name: Enable EPEL Repository on CentOS 7  # noqa: fqcn[action-core]
+  ansible.builtin.yum:
     name: epel-release
-    state: latest
+    state: present
   when: ansible_facts ['distribution_major_version'] == '7'
 
-- name: DNF update the system
-  dnf:
-    name:  "*"
+- name: DNF update the system  # noqa: package-latest
+  ansible.builtin.dnf:
+    name: "*"
     state: latest
   when: ansible_facts  ['distribution_major_version'] >= '8'
 
-- name: Yum update the system
-  yum:
+- name: Yum update the system  # noqa: package-latest fqcn[action-core]
+  ansible.builtin.yum:
     name: "*"
     state: latest
   when: ansible_facts ['distribution_major_version'] <= '7'

@@ -1,50 +1,54 @@
 ---
 # tasks file for AnsibleWIREGUARD
-  - name: Validate WireGuard UI credentials
-    assert:
-      that:
-        - WGUI_PASSWORD | length >= 16
-        - wgui_image is match('^.+(:v?[0-9][A-Za-z0-9_.-]*|@sha256:[a-f0-9]{64})$')
-      fail_msg: Set a unique WireGuard UI password and a version-tagged image or SHA-256 digest.
+- name: Validate WireGuard UI credentials
+  ansible.builtin.assert:
+    that:
+      - wgui_password | length >= 16
+      - wgui_image is match('^.+(:v?[0-9][A-Za-z0-9_.-]*|@sha256:[a-f0-9]{64})$')
+    fail_msg: Set a unique WireGuard UI password and a version-tagged image or SHA-256 digest.
 
-  - name: Install wireguard
-    apt:
-      name: wireguard
+- name: Install wireguard
+  ansible.builtin.apt:
+    name: wireguard
+    state: present
 
-  - name: Copy systermd
-    copy:
-      src: "{{item}}"
-      dest: "/etc/systemd/system/"
-    loop:
-      - "wgui.service"
-      - "wgui.path"
-    notify: Restart wireguard
+- name: Copy systemd units
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "/etc/systemd/system/"
+    mode: "0644"
+  loop:
+    - "wgui.service"
+    - "wgui.path"
+  notify: Restart wireguard
 
-  - name: Create directorys
-    file:
-      path: "{{item }}"
-      state: directory
-    loop:
-      - "{{docker_folder}}/{{wggui_container_name}}"
-      - "{{docker_folder}}/{{wggui_container_name}}/db"
+- name: Create directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "{{ docker_folder }}/{{ wggui_container_name }}"
+    - "{{ docker_folder }}/{{ wggui_container_name }}/db"
 
-  - name: Generate docker_compose
-    template:
-      src: "docker_compose.j2"
-      dest: "{{docker_folder}}/{{wggui_container_name}}/docker-compose.yml"
-      mode: '0600'
-    notify: Restart {{wggui_container_name}} container
+- name: Generate docker_compose
+  ansible.builtin.template:
+    src: "docker_compose.j2"
+    dest: "{{ docker_folder }}/{{ wggui_container_name }}/docker-compose.yml"
+    mode: "0600"
+  notify: Restart container {{ wggui_container_name }}
 
-  - name: Generate init
-    template:
-      src: "docker_compose_service.j2"
-      dest: "/etc/systemd/system/{{wggui_container_name}}.service"
-    notify: Restart {{wggui_container_name}} container
+- name: Generate init
+  ansible.builtin.template:
+    src: "docker_compose_service.j2"
+    dest: "/etc/systemd/system/{{ wggui_container_name }}.service"
+    mode: "0644"
+  notify: Restart container {{ wggui_container_name }}
 
-  - name: Ip forward
-    ansible.posix.sysctl:
-      name: net.ipv4.ip_forward
-      value: '1'
-      state: present
-      sysctl_file: /etc/sysctl.conf
-      reload: true
+- name: Ip forward
+  ansible.posix.sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+    state: present
+    sysctl_file: /etc/sysctl.conf
+    reload: true

@@ -2,22 +2,24 @@
 # tasks file for AnsiblePROXMOX
 
 - name: Install fail2ban packages
-  apt:
-    update_cache: yes
+  ansible.builtin.apt:
+    update_cache: true
     cache_valid_time: 3600
     name:
-    - fail2ban
+      - fail2ban
     state: present
   register: nftables_config
 
 - name: Copy proxmox fileter
-  copy:
+  ansible.builtin.copy:
     src: proxmox.conf
     dest: /etc/fail2ban/filter.d/
+    mode: "0644"
   notify: Restart fail2ban
 
 - name: Copy default fail2ban config
-  template:
+  ansible.builtin.template:
     src: jail.local.j2
     dest: /etc/fail2ban/jail.local
+    mode: "0644"
   notify: Restart fail2ban

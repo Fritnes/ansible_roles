@@ -2,6 +2,7 @@
 galaxy_info:
   author: fritnes
   description: Install workstation applications on Ubuntu
+  license: GPL-2.0-or-later
   min_ansible_version: '2.10'
   platforms:
     - name: Ubuntu

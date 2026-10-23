@@ -3,6 +3,6 @@
 docker_folder: "/opt"
 version: "3"
 wggui_container_name: "wggui"
-WGUI_USERNAME: "admin"
-WGUI_PASSWORD: ""
+wgui_username: "{{ WGUI_USERNAME | default('admin') }}"
+wgui_password: "{{ WGUI_PASSWORD | default('') }}"
 wgui_image: ""

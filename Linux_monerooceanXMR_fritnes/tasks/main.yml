@@ -1,8 +1,8 @@
----
-# tasks file for xmrig
-  - import_tasks: check.yml
-    tags:
-      - check_xmrig
+- name: Check latest XMRig release
+  ansible.builtin.import_tasks: check.yml
+  tags:
+    - check_xmrig
 
-  - import_tasks: install.yml
-    become: true
+- name: Install XMRig
+  ansible.builtin.import_tasks: install.yml
+  become: true

@@ -1,12 +1,12 @@
 ---
 # tasks file for linux-update
-  - name: setup
-    setup:
-      
-  - name: Dependonsi Debian
-    include_tasks: "debian.yml"
-    when: ansible_os_family == "Debian"
+- name: Setup facts
+  ansible.builtin.setup:
 
-  - name: Dependonsi RedHat
-    include_tasks: "redhat.yml"
-    when: ansible_os_family == "RedHat" or ansible_os_family == "Rocky"
+- name: Update Debian packages
+  ansible.builtin.include_tasks: "debian.yml"
+  when: ansible_os_family == "Debian"
+
+- name: Update RedHat packages
+  ansible.builtin.include_tasks: "redhat.yml"
+  when: ansible_os_family == "RedHat" or ansible_os_family == "Rocky"

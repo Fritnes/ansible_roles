@@ -1,15 +1,13 @@
----
-# handlers file for users
-  - name: Restart nmbd
-    systemd:
-      state: restarted
-      enabled: yes
-      daemon_reload: yes
-      name: nmbd
+- name: Restart nmbd
+  ansible.builtin.systemd:
+    state: restarted
+    enabled: true
+    daemon_reload: true
+    name: nmbd
 
-  - name: Restart hd-idle
-    systemd:
-      state: restarted
-      enabled: yes
-      daemon_reload: yes
-      name: hd-idle
+- name: Restart hd-idle
+  ansible.builtin.systemd:
+    state: restarted
+    enabled: true
+    daemon_reload: true
+    name: hd-idle

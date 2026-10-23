@@ -1,23 +1,25 @@
 ---
 # tasks file for prometheus
 - name: Clone a private repository into config folder.
-  git:
+  ansible.builtin.git:
     repo: "{{ prometheus_config_git_repo }}"
     version: "{{ prometheus_config_git_branch }}"
     dest: "/tmp/prom_config"
-    accept_hostkey: yes
-  become: no
+    accept_hostkey: true
+  become: false
   delegate_to: localhost
 
 - name: Propagate prometheus config folder
-  copy:
+  ansible.builtin.copy:
     src: "/tmp/prom_config/"
-    dest: "{{docker_folder}}/{{prometheus_container_name}}/prom_config/"
-  notify: Restart {{ prometheus_container_name }} container
+    dest: "{{ docker_folder }}/{{ prometheus_container_name }}/prom_config/"
+    mode: preserve
+  notify: Restart container {{ prometheus_container_name }}
 
 - name: Creates directory
-  file:
-    path: "{{item}}"
+  ansible.builtin.file:
+    path: "{{ prometheus_storage_tsdb_path }}"
     state: directory
-  loop:
-    - "{{prometheus_storage_tsdb_path}}"
+    owner: nobody
+    group: nogroup
+    mode: "0755"

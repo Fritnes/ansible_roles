@@ -1,19 +1,19 @@
 ---
 # tasks file for users
 - name: Check 'wheel' group
-  group:
+  ansible.builtin.group:
     name: wheel
     state: present
 
 - name: Remove legacy passwordless wheel rule
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/sudoers
     state: absent
     regexp: '^%wheel ALL=\(ALL\) NOPASSWD: ALL$'
     validate: 'visudo -cf %s'
 
 - name: Configure passwordless sudo for wheel
-  copy:
+  ansible.builtin.copy:
     content: "%wheel ALL=(ALL) NOPASSWD: ALL\n"
     dest: /etc/sudoers.d/ansible-wheel
     owner: root
@@ -23,13 +23,13 @@
   when: passwordless_sudo_wheel | bool
 
 - name: Remove passwordless sudo drop-in when disabled
-  file:
+  ansible.builtin.file:
     path: /etc/sudoers.d/ansible-wheel
     state: absent
   when: not (passwordless_sudo_wheel | bool)
 
 - name: SSHD
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
     state: present
     regexp: "{{ item.regexp }}"
@@ -41,7 +41,7 @@
   notify: Restart sshd
 
 - name: Deny Password
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
     state: present
     regexp: '^PasswordAuthentication'
@@ -50,30 +50,30 @@
   when: allow_ssh_password != "true"
 
 - name: ADD Users
-  include_tasks: add_users.yml
+  ansible.builtin.include_tasks: add_users.yml
   loop: "{{ users | default([], true) }}"
 
 - name: ADD students
-  include_tasks: student_users.yml
+  ansible.builtin.include_tasks: student_users.yml
   loop: "{{ student_users | default([], true) }}"
   when: students_allow == "true"
 
 - name: DEL Users
-  include_tasks: del_users.yml
+  ansible.builtin.include_tasks: del_users.yml
   loop: "{{ del_users | default([], true) }}"
 
 - name: Set up .bashrc root
-  copy:
+  ansible.builtin.copy:
     src: "bash/bashrc"
     dest: "/root/.bashrc"
     owner: "root"
     group: "root"
-    mode: 0644
+    mode: "0644"
 
 - name: Set up .dircolors root
-  copy:
+  ansible.builtin.copy:
     src: "bash/dircolors"
     dest: "/root/.dircolors"
     owner: "root"
     group: "root"
-    mode: 0644
+    mode: "0644"

@@ -1,14 +1,12 @@
----
-# handlers file for prometheus
-  - name: Restart {{ prometheus_container_name }} container
-    command: |
-      docker compose down
-    args:
-      chdir: "{{docker_folder}}/{{prometheus_container_name}}/"
-    notify: UP {{ prometheus_container_name }} container
+- name: Restart container {{ prometheus_container_name }}
+  ansible.builtin.command: docker compose down
+  args:
+    chdir: "{{ docker_folder }}/{{ prometheus_container_name }}/"
+  changed_when: true
+  notify: Start container {{ prometheus_container_name }}
 
-  - name: UP {{ prometheus_container_name }} container
-    command: |
-      docker compose up -d --quiet-pull --force-recreate
-    args:
-      chdir: "{{docker_folder}}/{{prometheus_container_name}}/"
+- name: Start container {{ prometheus_container_name }}
+  ansible.builtin.command: docker compose up -d --quiet-pull --force-recreate
+  args:
+    chdir: "{{ docker_folder }}/{{ prometheus_container_name }}/"
+  changed_when: true

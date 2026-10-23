@@ -1,19 +1,17 @@
----
-# tasks file for MinecraftServer
-  - name: Require a pinned Minecraft server image
-    assert:
-      that:
-        - MinecraftServer_image is match('^.+(:v?[0-9][A-Za-z0-9_.-]*|@sha256:[a-f0-9]{64})$')
-      fail_msg: Set MinecraftServer_image to an explicit version tag or digest.
+- name: Require a pinned Minecraft server image
+  ansible.builtin.assert:
+    that:
+      - minecraft_server_image is match('^.+(:v?[0-9][A-Za-z0-9_.-]*|@sha256:[a-f0-9]{64})$')
+    fail_msg: Set minecraft_server_image to an explicit version tag or digest.
 
-  - name: Creates MinecraftServer directory
-    file:
-      path: "{{item }}"
-      state: directory
-    loop:
-      - "{{MinecraftServer_folder}}/{{MinecraftServer_container_name}}"
+- name: Create Minecraft server directory
+  ansible.builtin.file:
+    path: "{{ minecraft_server_folder }}/{{ minecraft_server_container_name }}"
+    state: directory
+    mode: "0755"
 
-  - name: Generate MinecraftServer docker_compose
-    template:
-      src: "docker_compose.j2"
-      dest: "{{MinecraftServer_folder}}/{{MinecraftServer_container_name}}/docker-compose.yml"
+- name: Generate Minecraft server compose file
+  ansible.builtin.template:
+    src: "docker_compose.j2"
+    dest: "{{ minecraft_server_folder }}/{{ minecraft_server_container_name }}/docker-compose.yml"
+    mode: "0644"

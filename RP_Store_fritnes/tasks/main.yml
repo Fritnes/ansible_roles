@@ -1,13 +1,13 @@
 ---
 # tasks file for RPstore
 - name: Install useful packages
-  apt:
+  ansible.builtin.apt:
     name:
-    - hd-idle
+      - hd-idle
     state: present
 
 - name: SSHD
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/default/hd-idle
     state: present
     regexp: "{{ item.regexp }}"
@@ -18,20 +18,20 @@
   notify: Restart hd-idle
 
 - name: Remove udisks2
-  apt:
+  ansible.builtin.apt:
     name:
-    - udisks2
+      - udisks2
     state: absent
 
 - name: Stop and disable services
-  service:
+  ansible.builtin.service:
     name: "{{ item }}"
-    enabled: no
-    state:   stopped
+    enabled: false
+    state: stopped
   loop:
     - "smartmontools.service"
     - "fstrim.timer"
     - "e2scrub_all.timer"
 
 - name: Dependonsi Debian
-  include_tasks: "smb.yml"
+  ansible.builtin.include_tasks: "smb.yml"

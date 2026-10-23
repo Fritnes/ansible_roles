@@ -1,8 +1,7 @@
 ---
-# handlers file for xmrig
-    - name: Restart xmrig
-      systemd:
-        state: restarted
-        enabled: yes
-        daemon_reload: yes
-        name: "{{xmrig_systemd_name}}.service"
+- name: Restart xmrig
+  ansible.builtin.systemd:
+    state: restarted
+    enabled: true
+    daemon_reload: true
+    name: "{{ xmrig_systemd_name }}.service"

@@ -1,34 +1,31 @@
----
-# tasks file for prometheus
-  - name: Validate Grafana credentials
-    assert:
-      that:
-        - grafana_admin_password | length >= 16
-        - prometheus_image is match('^.+(:v?[0-9][A-Za-z0-9_.-]*|@sha256:[a-f0-9]{64})$')
-        - grafana_image is match('^.+(:v?[0-9][A-Za-z0-9_.-]*|@sha256:[a-f0-9]{64})$')
-      fail_msg: Set a unique Grafana password and pinned Prometheus and Grafana image references.
+- name: Validate Grafana credentials
+  ansible.builtin.assert:
+    that:
+      - grafana_admin_password | length >= 16
+      - prometheus_image is match('^.+(:v?[0-9][A-Za-z0-9_.-]*|@sha256:[a-f0-9]{64})$')
+      - grafana_image is match('^.+(:v?[0-9][A-Za-z0-9_.-]*|@sha256:[a-f0-9]{64})$')
+    fail_msg: Set a unique Grafana password and pinned Prometheus and Grafana image references.
 
-  - name: Creates prometheus directory
-    file:
-      path: "{{item }}"
-      state: directory
-    loop:
-      - "{{docker_folder}}/{{prometheus_container_name}}"
+- name: Create Prometheus directory
+  ansible.builtin.file:
+    path: "{{ docker_folder }}/{{ prometheus_container_name }}"
+    state: directory
+    mode: "0755"
 
-  - name: Creates prometheus data directory
-    file:
-      path: "{{item}}"
-      owner: "nobody"
-      group: "nogroup"
-      state: directory
-    loop:
-      - "{{prometheus_storage_tsdb_path}}"
+- name: Create Prometheus data directory
+  ansible.builtin.file:
+    path: "{{ prometheus_storage_tsdb_path }}"
+    owner: nobody
+    group: nogroup
+    state: directory
+    mode: "0755"
 
-  - name: Generate prometheus docker_compose
-    template:
-      src: "docker_compose.j2"
-      dest: "{{docker_folder}}/{{prometheus_container_name}}/docker-compose.yml"
-      mode: '0600'
-    notify: Restart {{prometheus_container_name}} container
+- name: Generate Prometheus compose file
+  ansible.builtin.template:
+    src: "docker_compose.j2"
+    dest: "{{ docker_folder }}/{{ prometheus_container_name }}/docker-compose.yml"
+    mode: "0600"
+  notify: Restart container {{ prometheus_container_name }}
 
-  - import_tasks: config.yml
+- name: Configure Prometheus
+  ansible.builtin.import_tasks: config.yml

@@ -1,5 +1,5 @@
 ---
 # defaults file for MinecraftServer
-MinecraftServer_folder: "/opt"
-MinecraftServer_container_name: "MinecraftServer"
-MinecraftServer_image: ""
+minecraft_server_folder: "{{ MinecraftServer_folder | default('/opt') }}"
+minecraft_server_container_name: "{{ MinecraftServer_container_name | default('MinecraftServer') }}"
+minecraft_server_image: "{{ MinecraftServer_image | default('') }}"

@@ -1,18 +1,18 @@
 ---
 # handlers file for AnsibleWIREGUARD
-  - name: Restart {{wggui_container_name}} container
-    systemd:
-      state: restarted
-      enabled: yes
-      daemon_reload: yes
-      name: "{{ wggui_container_name }}"
+- name: Restart container {{ wggui_container_name }}
+  ansible.builtin.systemd:
+    state: restarted
+    enabled: true
+    daemon_reload: true
+    name: "{{ wggui_container_name }}"
 
-  - name: Restart wireguard
-    systemd:
-      state: restarted
-      enabled: yes
-      daemon_reload: yes
-      name: "{{item}}"
-    loop:
-      - "wgui.path"
-      - "wgui.service"
+- name: Restart wireguard
+  ansible.builtin.systemd:
+    state: restarted
+    enabled: true
+    daemon_reload: true
+    name: "{{ item }}"
+  loop:
+    - "wgui.path"
+    - "wgui.service"

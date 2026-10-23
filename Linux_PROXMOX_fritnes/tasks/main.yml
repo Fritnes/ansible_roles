@@ -2,7 +2,7 @@
 # tasks file for AnsiblePROXMOX
 
 - name: Remove specified repository from sources list
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: "{{ item }}"
     state: absent
   loop:
@@ -10,25 +10,25 @@
     - "deb https://enterprise.proxmox.com/debian/pve bookworm pve-enterprise"
 
 - name: Add specified repository into sources list
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: deb http://download.proxmox.com/debian/pve bookworm pve-no-subscription
     state: present
 
 - name: Install useful packages
-  apt:
-    update_cache: yes
+  ansible.builtin.apt:
+    update_cache: true
     cache_valid_time: 3600
     name:
-    - curl
-    - smartmontools
-    - iftop
-    - traceroute
-    - nmap
-    - net-tools
-    - zip
-    - htop
-    - lm-sensors
+      - curl
+      - smartmontools
+      - iftop
+      - traceroute
+      - nmap
+      - net-tools
+      - zip
+      - htop
+      - lm-sensors
     state: present
 
 - name: Dependonsi Debian
-  include_tasks: "f2b.yml"
+  ansible.builtin.include_tasks: "f2b.yml"

@@ -1,6 +1,6 @@
 services:
   mc:
-    image: {{MinecraftServer_image}}
+    image: {{ minecraft_server_image }}
     restart: unless-stopped
     ports:
     - "25565:25565"

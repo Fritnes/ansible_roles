@@ -1,14 +1,15 @@
 ---
 # tasks file for WGClient
 - name: Install useful packages
-  apt:
+  ansible.builtin.apt:
     name:
-    - wireguard
-    - resolvconf
+      - wireguard
+      - resolvconf
     state: present
 
 - name: Generate conf
-  copy:
+  ansible.builtin.copy:
     src: "{{ wireguard_config_path }}"
     dest: "/etc/wireguard/{{ wg_config_name }}.conf"
+    mode: "0600"
   notify: Restart wg-quick
