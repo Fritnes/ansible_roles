@@ -67,4 +67,4 @@ The built-in nftables policy permits SSH and drops other inbound traffic. Provid
 
 ## Validation
 
-GitHub Actions syntax-checks all roles. `ansible-lint tests/syntax.yml` is currently advisory while legacy roles are brought into compliance. Package upgrades belong in `Linux_SysUpdate_fritnes`, not service installation roles.
+GitHub Actions syntax-checks all roles and enforces `ansible-lint --offline tests/syntax.yml`. Package upgrades belong in `Linux_SysUpdate_fritnes`, not service installation roles.

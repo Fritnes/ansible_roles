@@ -22,5 +22,5 @@ jobs:
               /tmp/ansible-venv/bin/pip install ansible-core ansible-lint
               /tmp/ansible-venv/bin/ansible-galaxy collection install -r requirements.yml
               ANSIBLE_CONFIG=ansible.cfg /tmp/ansible-venv/bin/ansible-playbook -i localhost, tests/syntax.yml --syntax-check
-              /tmp/ansible-venv/bin/ansible-lint --offline tests/syntax.yml || true
+              /tmp/ansible-venv/bin/ansible-lint --offline tests/syntax.yml
             '
