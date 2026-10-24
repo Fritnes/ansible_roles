@@ -1,29 +1,27 @@
----
-# tasks file for Loki
-  - name: Creates Loki directory
-    file:
-      path: "{{item}}"
-      state: directory
-    loop:
-      - "{{docker_folder}}/{{Loki_container_name}}"
+- name: Create Loki directory
+  ansible.builtin.file:
+    path: "{{ docker_folder }}/{{ loki_container_name }}"
+    state: directory
+    mode: "0755"
 
-  - name: Creates directory for store Loki data
-    file:
-      path: "{{item}}"
-      state: directory
-      owner: 10001
-      group: 10001
-    loop:
-      - "{{docker_folder}}/{{Loki_container_name}}/data"
+- name: Create Loki data directory
+  ansible.builtin.file:
+    path: "{{ docker_folder }}/{{ loki_container_name }}/data"
+    state: directory
+    owner: 10001
+    group: 10001
+    mode: "0755"
 
-  - name: Generate Loki docker_compose
-    template:
-      src: "docker_compose.j2"
-      dest: "{{docker_folder}}/{{Loki_container_name}}/docker-compose.yml"
-    notify: Restart {{Loki_container_name}} container
+- name: Generate Loki compose file
+  ansible.builtin.template:
+    src: "docker_compose.j2"
+    dest: "{{ docker_folder }}/{{ loki_container_name }}/docker-compose.yml"
+    mode: "0600"
+  notify: Restart container {{ loki_container_name }}
 
-  - name: Generate Loki init
-    template:
-      src: "docker_compose_service.j2"
-      dest: "/etc/systemd/system/{{Loki_container_name}}.service"
-    notify: Restart {{Loki_container_name}} container
+- name: Generate Loki service
+  ansible.builtin.template:
+    src: "docker_compose_service.j2"
+    dest: "/etc/systemd/system/{{ loki_container_name }}.service"
+    mode: "0644"
+  notify: Restart container {{ loki_container_name }}

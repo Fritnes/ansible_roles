@@ -1,20 +1,19 @@
----
-# tasks file for dockerTMP
-  - name: Creates dockerTMP directory
-    file:
-      path: "{{item }}"
-      state: directory
-    loop:
-      - "{{docker_folder}}/{{dockerTMP_container_name}}"
+- name: Create dockerTMP directory
+  ansible.builtin.file:
+    path: "{{ docker_folder }}/{{ docker_tmp_container_name }}"
+    state: directory
+    mode: "0755"
 
-  - name: Generate dockerTMP docker_compose
-    template:
-      src: "docker_compose.j2"
-      dest: "{{docker_folder}}/{{dockerTMP_container_name}}/docker-compose.yml"
-    notify: Restart {{dockerTMP_container_name}} container
+- name: Generate dockerTMP compose file
+  ansible.builtin.template:
+    src: "docker_compose.j2"
+    dest: "{{ docker_folder }}/{{ docker_tmp_container_name }}/docker-compose.yml"
+    mode: "0600"
+  notify: Restart container {{ docker_tmp_container_name }}
 
-  - name: Generate dockerTMP init
-    template:
-      src: "docker_compose_service.j2"
-      dest: "/etc/systemd/system/{{dockerTMP_container_name}}.service"
-    notify: Restart {{dockerTMP_container_name}} container
+- name: Generate dockerTMP service
+  ansible.builtin.template:
+    src: "docker_compose_service.j2"
+    dest: "/etc/systemd/system/{{ docker_tmp_container_name }}.service"
+    mode: "0644"
+  notify: Restart container {{ docker_tmp_container_name }}

@@ -1,42 +1,45 @@
----
-# tasks file for dashy
-  - name: Require a pinned Dashy image
-    assert:
-      that:
-        - dashy_image is match('^.+(:v?[0-9][A-Za-z0-9_.-]*|@sha256:[a-f0-9]{64})$')
-      fail_msg: Set dashy_image to an explicit version tag or digest.
+- name: Require a pinned Dashy image
+  ansible.builtin.assert:
+    that:
+      - dashy_image is match('^.+(:v?[0-9][A-Za-z0-9_.-]*|@sha256:[a-f0-9]{64})$')
+    fail_msg: Set dashy_image to an explicit version tag or digest.
 
-  - name: Creates dashy directory
-    file:
-      path: "{{item }}"
-      state: directory
-    loop:
-      - "{{docker_folder}}/{{dashy_container_name}}"
-      - "{{docker_folder}}/{{dashy_container_name}}/item-icons"
+- name: Create Dashy directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "{{ docker_folder }}/{{ dashy_container_name }}"
+    - "{{ docker_folder }}/{{ dashy_container_name }}/item-icons"
 
-  - name: Generate dashy docker_compose
-    template:
-      src: "docker_compose.j2"
-      dest: "{{docker_folder}}/{{dashy_container_name}}/docker-compose.yml"
-    notify: Restart {{dashy_container_name}} container
+- name: Generate Dashy compose file
+  ansible.builtin.template:
+    src: "docker_compose.j2"
+    dest: "{{ docker_folder }}/{{ dashy_container_name }}/docker-compose.yml"
+    mode: "0600"
+  notify: Restart container {{ dashy_container_name }}
 
-  - name: Copy config if exist
-    copy:
-      src: "{{dashy_config_path}}"
-      dest: "{{docker_folder}}/{{dashy_container_name}}/conf.yml"
-      force: "{{dashy_config_force}}"
-    when: dashy_config_path is defined
-    notify: Restart {{dashy_container_name}} container
+- name: Copy custom Dashy config if provided
+  ansible.builtin.copy:
+    src: "{{ dashy_config_path }}"
+    dest: "{{ docker_folder }}/{{ dashy_container_name }}/conf.yml"
+    force: "{{ dashy_config_force }}"
+    mode: "0600"
+  when: dashy_config_path is defined
+  notify: Restart container {{ dashy_container_name }}
 
-  - name: Copy default config
-    copy:
-      src: "dashy_def.yml"
-      dest: "{{docker_folder}}/{{dashy_container_name}}/conf.yml"
-      force: false
-    when: dashy_config_path is not defined
+- name: Copy default Dashy config
+  ansible.builtin.copy:
+    src: "dashy_def.yml"
+    dest: "{{ docker_folder }}/{{ dashy_container_name }}/conf.yml"
+    force: false
+    mode: "0600"
+  when: dashy_config_path is not defined
 
-  - name: Generate dashy init
-    template:
-      src: "docker_compose_service.j2"
-      dest: "/etc/systemd/system/{{dashy_container_name}}.service"
-    notify: Restart {{dashy_container_name}} container
+- name: Generate Dashy service
+  ansible.builtin.template:
+    src: "docker_compose_service.j2"
+    dest: "/etc/systemd/system/{{ dashy_container_name }}.service"
+    mode: "0644"
+  notify: Restart container {{ dashy_container_name }}

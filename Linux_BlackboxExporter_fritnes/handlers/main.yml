@@ -1,8 +1,8 @@
 ---
 # handlers file for blackbox_exporter
-  - name: Restart {{ blackbox_exporter_container_name }} container
-    systemd:
-      state: restarted
-      enabled: yes
-      daemon_reload: yes
-      name: "{{ blackbox_exporter_container_name }}"
+- name: Restart container {{ blackbox_exporter_container_name }}
+  ansible.builtin.systemd:
+    state: restarted
+    enabled: true
+    daemon_reload: true
+    name: "{{ blackbox_exporter_container_name }}"

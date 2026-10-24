@@ -1,29 +1,27 @@
----
-# tasks file for dwordpress
-  - name: Validate WordPress database password
-    assert:
-      that:
-        - dwordpress_db_password | length >= 16
-        - dwordpress_wordpress_image is match('^.+(:v?[0-9][A-Za-z0-9_.-]*|@sha256:[a-f0-9]{64})$')
-        - dwordpress_mariadb_image is match('^.+(:v?[0-9][A-Za-z0-9_.-]*|@sha256:[a-f0-9]{64})$')
-      fail_msg: Set a unique database password and pinned WordPress and MariaDB image references.
+- name: Validate WordPress database password
+  ansible.builtin.assert:
+    that:
+      - dwordpress_db_password | length >= 16
+      - dwordpress_wordpress_image is match('^.+(:v?[0-9][A-Za-z0-9_.-]*|@sha256:[a-f0-9]{64})$')
+      - dwordpress_mariadb_image is match('^.+(:v?[0-9][A-Za-z0-9_.-]*|@sha256:[a-f0-9]{64})$')
+    fail_msg: Set a unique database password and pinned WordPress and MariaDB image references.
 
-  - name: Creates dwordpress directory
-    file:
-      path: "{{ item }}"
-      state: directory
-    loop:
-      - "{{docker_folder}}/{{dwordpress_container_name}}"
+- name: Create WordPress directory
+  ansible.builtin.file:
+    path: "{{ docker_folder }}/{{ dwordpress_container_name }}"
+    state: directory
+    mode: "0755"
 
-  - name: Generate dwordpress docker_compose
-    template:
-      src: "docker_compose.j2"
-      dest: "{{docker_folder}}/{{dwordpress_container_name}}/docker-compose.yml"
-      mode: '0600'
-    notify: Restart {{dwordpress_container_name}} container
+- name: Generate WordPress compose file
+  ansible.builtin.template:
+    src: "docker_compose.j2"
+    dest: "{{ docker_folder }}/{{ dwordpress_container_name }}/docker-compose.yml"
+    mode: "0600"
+  notify: Restart container {{ dwordpress_container_name }}
 
-  - name: Generate dwordpress init
-    template:
-      src: "docker_compose_service.j2"
-      dest: "/etc/systemd/system/{{dwordpress_container_name}}.service"
-    notify: Restart {{dwordpress_container_name}} container
+- name: Generate WordPress init
+  ansible.builtin.template:
+    src: "docker_compose_service.j2"
+    dest: "/etc/systemd/system/{{ dwordpress_container_name }}.service"
+    mode: "0644"
+  notify: Restart container {{ dwordpress_container_name }}

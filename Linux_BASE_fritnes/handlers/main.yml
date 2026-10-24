@@ -1,8 +1,12 @@
 ---
 # handlers file for base
-  - name: Restart systemd-resolved
-    systemd:
-      state: restarted
-      enabled: yes
-      daemon_reload: yes
-      name: "systemd-resolved"
+- name: Restart systemd-resolved
+  ansible.builtin.systemd:
+    state: restarted
+    enabled: true
+    daemon_reload: true
+    name: systemd-resolved
+
+- name: Reconfigure timezone data
+  ansible.builtin.command: dpkg-reconfigure -f noninteractive tzdata
+  changed_when: true

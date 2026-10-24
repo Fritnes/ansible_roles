@@ -1,8 +1,8 @@
 ---
 # defaults file for base
 
-VM: false
-#HYPERVISOR KVM or VMware
-HYPERVISOR: KVM
-noCT: true
+vm: "{{ VM | default(false) }}"
+# Hypervisor: KVM or VMware
+hypervisor: "{{ HYPERVISOR | default('KVM') }}"
+no_ct: "{{ noCT | default(true) }}"
 set_timezone: Europe/Kiev

@@ -2,6 +2,7 @@
 galaxy_info:
   author: fritnes
   description: Configure a WPA2 wireless access point with Hostapd
+  license: GPL-2.0-or-later
   min_ansible_version: '2.10'
   platforms:
     - name: Debian

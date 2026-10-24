@@ -1,24 +1,25 @@
 ---
-#Task for debian based firewall
+# Task for Debian-based firewall
 - name: Install fail2ban packages
-  apt:
-    update_cache: yes
+  ansible.builtin.apt:
+    update_cache: true
     cache_valid_time: 3600
     name:
-    - fail2ban
+      - fail2ban
     state: present
   register: nftables_config
 
 - name: Change fail2ban service
-  lineinfile:
-    dest:  /lib/systemd/system/fail2ban.service
+  ansible.builtin.lineinfile:
+    dest: /lib/systemd/system/fail2ban.service
     state: present
     regexp: '^PartOf='
     line: 'PartOf=nftables.service'
   notify: Restart fail2ban
 
-- name: Copy default fail2ban config 
-  template:
+- name: Copy default fail2ban config
+  ansible.builtin.template:
     src: jail.local.j2
     dest: /etc/fail2ban/jail.local
+    mode: "0644"
   notify: Restart fail2ban

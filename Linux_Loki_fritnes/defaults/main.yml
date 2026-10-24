@@ -1,4 +1,4 @@
 ---
 # defaults file for Loki
 docker_folder: "/opt"
-Loki_container_name: "Loki"
+loki_container_name: "{{ Loki_container_name | default('Loki') }}"

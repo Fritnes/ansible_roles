@@ -1,12 +1,12 @@
 ---
 # handlers file for kasmvnc
-    - name: Restart kasmvnc
-      systemd:
-        state: restarted
-        enabled: yes
-        daemon_reload: yes
-        name: "kasmvnc_{{ kasmvnc_system_username }}.service"
+- name: Restart kasmvnc
+  ansible.builtin.systemd:
+    state: restarted
+    enabled: true
+    daemon_reload: true
+    name: "kasmvnc_{{ kasmvnc_system_username }}.service"
 
-    - name: Install soft
-      shell: "/opt/soft.sh"
-      ignore_errors: yes
+- name: Install soft
+  ansible.builtin.command: /opt/soft.sh
+  changed_when: true

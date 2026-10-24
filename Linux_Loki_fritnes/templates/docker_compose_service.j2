@@ -1,11 +1,11 @@
 [Unit]
-Description={{Loki_container_name}}
+Description={{ loki_container_name }}
 After=docker.service
 BindsTo=docker.service
 
 [Service]
 Restart=always
-WorkingDirectory={{docker_folder}}/{{Loki_container_name}}/
+WorkingDirectory={{ docker_folder }}/{{ loki_container_name }}/
 ExecStartPre=docker-compose pull
 ExecStart=docker-compose up
 ExecStop=docker-compose down

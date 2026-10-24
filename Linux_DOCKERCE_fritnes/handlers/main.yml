@@ -1,8 +1,8 @@
 ---
 # handlers file for docker
-  - name: Restart docker
-    systemd:
-      state: restarted
-      enabled: yes
-      daemon_reload: yes
-      name: "docker"
+- name: Restart docker
+  ansible.builtin.systemd:
+    state: restarted
+    enabled: true
+    daemon_reload: true
+    name: docker

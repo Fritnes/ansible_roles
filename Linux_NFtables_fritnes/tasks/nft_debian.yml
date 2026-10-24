@@ -1,36 +1,35 @@
 ---
-#Task for debian based firewall
+# Task for Debian-based firewall
 - name: Remove UFW
-  apt:
+  ansible.builtin.apt:
     name:
-    - ufw
-    purge: yes
+      - ufw
+    purge: true
     state: absent
   register: ufw_remove
-
-- name: Disable & Mask UFW
-  shell: systemctl stop ufw; systemctl disable ufw; systemctl mask ufw
-  when: ufw_remove.changed
+  notify: Disable and mask UFW
 
 - name: Install nftables packages
-  apt:
-    update_cache: yes
+  ansible.builtin.apt:
+    update_cache: true
     cache_valid_time: 3600
     name:
-    - nftables
+      - nftables
     state: present
   register: nftables_config
 
 - name: Copy nftables config
-  copy:
+  ansible.builtin.copy:
     src: "{{ nftables_config_path }}"
     dest: /etc/nftables.conf
+    mode: "0644"
   notify: Restart nftables
   when: (nftables_config_path is defined) and (nftables_config_path|length > 0)
 
 - name: Copy default nftables config
-  template:
+  ansible.builtin.template:
     src: nftables.conf.j2
     dest: /etc/nftables.conf
+    mode: "0644"
   notify: Restart nftables
   when: (ufw_remove.changed or nftables_config.changed) and (nftables_config_path is not defined or nftables_config_path | length == 0)

@@ -1,15 +1,22 @@
 ---
 # handlers file for base
-  - name: Restart fail2ban
-    systemd:
-      state: restarted
-      enabled: yes
-      daemon_reload: yes
-      name: "fail2ban"
+- name: Restart fail2ban
+  ansible.builtin.systemd:
+    state: restarted
+    enabled: true
+    daemon_reload: true
+    name: fail2ban
 
-  - name: Restart nftables
-    systemd:
-      state: restarted
-      enabled: yes
-      daemon_reload: yes
-      name: "nftables"
+- name: Restart nftables
+  ansible.builtin.systemd:
+    state: restarted
+    enabled: true
+    daemon_reload: true
+    name: nftables
+
+- name: Disable and mask UFW
+  ansible.builtin.systemd:
+    name: ufw
+    state: stopped
+    enabled: false
+    masked: true

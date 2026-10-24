@@ -1,26 +1,25 @@
----
-# tasks file for npm
-  - name: Require a pinned Nginx Proxy Manager image
-    assert:
-      that:
-        - npm_image is match('^.+(:v?[0-9][A-Za-z0-9_.-]*|@sha256:[a-f0-9]{64})$')
-      fail_msg: Set npm_image to an explicit version tag or digest.
+- name: Require a pinned Nginx Proxy Manager image
+  ansible.builtin.assert:
+    that:
+      - npm_image is match('^.+(:v?[0-9][A-Za-z0-9_.-]*|@sha256:[a-f0-9]{64})$')
+    fail_msg: Set npm_image to an explicit version tag or digest.
 
-  - name: Creates npm directory
-    file:
-      path: "{{item }}"
-      state: directory
-    loop:
-      - "{{docker_folder}}/{{npm_container_name}}"
+- name: Create NPM directory
+  ansible.builtin.file:
+    path: "{{ docker_folder }}/{{ npm_container_name }}"
+    state: directory
+    mode: "0755"
 
-  - name: Generate npm docker_compose
-    template:
-      src: "docker_compose.j2"
-      dest: "{{docker_folder}}/{{npm_container_name}}/docker-compose.yml"
-    notify: Restart {{npm_container_name}} container
+- name: Generate NPM compose file
+  ansible.builtin.template:
+    src: "docker_compose.j2"
+    dest: "{{ docker_folder }}/{{ npm_container_name }}/docker-compose.yml"
+    mode: "0600"
+  notify: Restart container {{ npm_container_name }}
 
-  - name: Generate npm init
-    template:
-      src: "docker_compose_service.j2"
-      dest: "/etc/systemd/system/{{npm_container_name}}.service"
-    notify: Restart {{npm_container_name}} container
+- name: Generate NPM init
+  ansible.builtin.template:
+    src: "docker_compose_service.j2"
+    dest: "/etc/systemd/system/{{ npm_container_name }}.service"
+    mode: "0644"
+  notify: Restart container {{ npm_container_name }}

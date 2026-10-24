@@ -1,6 +1,6 @@
 ---
 # defaults file for KasmVNC
-    kasmvnc_system_username: "kasm"
-    kasm_username: "kasm"
-    kasm_password: ""
-    kasm_sofrware_install: "true"
+kasmvnc_system_username: "kasm"
+kasm_username: "kasm"
+kasm_password: ""
+kasm_software_install: true

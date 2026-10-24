@@ -1,5 +1,5 @@
 ---
-#Fail2ban
+# Fail2ban
 f2b_bantime: 86400
 f2b_findtime: 600
 f2b_maxretry: 3

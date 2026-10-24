@@ -1,14 +1,14 @@
----
-# tasks file for KasmVNC
-  - name: Validate KasmVNC password
-    assert:
-      that:
-        - kasm_password | length >= 16
-      fail_msg: Set kasm_password to a unique secret of at least 16 characters.
+- name: Validate KasmVNC password
+  ansible.builtin.assert:
+    that:
+      - kasm_password | length >= 16
+    fail_msg: Set kasm_password to a unique secret of at least 16 characters.
 
-  - import_tasks: check.yml
-    tags:
-      - check_kasmvnc
+- name: Check KasmVNC release
+  ansible.builtin.import_tasks: check.yml
+  tags:
+    - check_kasmvnc
 
-  - import_tasks: install.yml
-    become: true
+- name: Install KasmVNC
+  ansible.builtin.import_tasks: install.yml
+  become: true

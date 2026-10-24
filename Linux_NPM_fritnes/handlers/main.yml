@@ -1,8 +1,8 @@
 ---
 # handlers file for npm
-  - name: Restart {{ npm_container_name }} container
-    systemd:
-      state: restarted
-      enabled: yes
-      daemon_reload: yes
-      name: "{{ npm_container_name }}"
+- name: Restart container {{ npm_container_name }}
+  ansible.builtin.systemd:
+    state: restarted
+    enabled: true
+    daemon_reload: true
+    name: "{{ npm_container_name }}"
