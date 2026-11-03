@@ -42,7 +42,10 @@ workstation_packages:
 workstation_enable_spotify: true
 workstation_spotify_key_url: https://download.spotify.com/debian/pubkey_5E3C45D7B312C643.gpg
 workstation_spotify_keyring: /etc/apt/keyrings/spotify.asc
-workstation_spotify_repository: "deb [signed-by=/etc/apt/keyrings/spotify.asc] https://repository.spotify.com stable non-free"
+workstation_spotify_uri: https://repository.spotify.com
+workstation_spotify_suite: stable
+workstation_spotify_components:
+  - non-free
 
 workstation_manage_firefox_preferences: true
 workstation_firefox_preferences_path: /etc/apt/preferences.d/mozilla-firefox

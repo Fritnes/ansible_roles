@@ -12,7 +12,24 @@
     owner: root
     group: root
     mode: '0755'
-  when: workstation_enable_spotify | bool
+  when: workstation_enable_spotify | bool or (workstation_ppa_repositories | length > 0)
+
+- name: Create Launchpad APT keyring directory
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  when: workstation_ppa_repositories | length > 0
+
+- name: Look up Launchpad PPA signing keys
+  ansible.builtin.uri:
+    url: "https://api.launchpad.net/1.0/~{{ item.split(':')[1].split('/')[0] }}/+archive/ubuntu/{{ item.split('/')[-1] }}"
+    return_content: false
+    status_code: 200
+  loop: "{{ workstation_ppa_repositories }}"
+  register: workstation_ppa_metadata
 
 - name: Download Spotify APT signing key
   ansible.builtin.get_url:
@@ -23,19 +40,37 @@
     mode: '0644'
   when: workstation_enable_spotify | bool
 
+- name: Download Launchpad PPA signing keys
+  ansible.builtin.get_url:
+    url: "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x{{ item.json.signing_key_fingerprint }}"
+    dest: "/etc/apt/keyrings/ppa-{{ item.item.split(':')[1] | replace('/', '-') }}.asc"
+    owner: root
+    group: root
+    mode: '0644'
+  loop: "{{ workstation_ppa_metadata.results | default([]) }}"
+
 - name: Add workstation PPAs
-  ansible.builtin.apt_repository:
-    repo: "{{ item }}"
+  ansible.builtin.deb822_repository:
+    name: "ppa-{{ item.item.split(':')[1] | replace('/', '-') }}"
+    types: [deb]
+    uris: "https://ppa.launchpadcontent.net/{{ item.item.split(':')[1].split('/')[0] }}/{{ item.item.split('/')[-1] }}/ubuntu"
+    suites: "{{ ansible_distribution_release }}"
+    components: [main]
+    signed_by: "/etc/apt/keyrings/ppa-{{ item.item.split(':')[1] | replace('/', '-') }}.asc"
     state: present
-    update_cache: false
-  loop: "{{ workstation_ppa_repositories }}"
+    install_python_debian: true
+  loop: "{{ workstation_ppa_metadata.results | default([]) }}"
 
 - name: Add Spotify APT repository
-  ansible.builtin.apt_repository:
-    repo: "{{ workstation_spotify_repository }}"
-    filename: spotify
+  ansible.builtin.deb822_repository:
+    name: spotify
+    types: [deb]
+    uris: "{{ workstation_spotify_uri }}"
+    suites: "{{ workstation_spotify_suite }}"
+    components: "{{ workstation_spotify_components }}"
+    signed_by: "{{ workstation_spotify_keyring }}"
     state: present
-    update_cache: false
+    install_python_debian: true
   when: workstation_enable_spotify | bool
 
 - name: Update APT package cache

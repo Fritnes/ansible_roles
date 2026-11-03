@@ -2,7 +2,7 @@ galaxy_info:
   author: fritnes
   description: roles for personal uses
   license: GPL-2.0-or-later
-  min_ansible_version: "2.9"
+  min_ansible_version: "2.20"
 
   galaxy_tags: []
 
