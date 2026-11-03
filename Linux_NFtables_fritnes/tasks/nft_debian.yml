@@ -1,35 +1,52 @@
 ---
-# Task for Debian-based firewall
+- name: Stop and disable UFW if present
+  ansible.builtin.systemd:
+    name: ufw
+    state: stopped
+    enabled: false
+  register: ufw_stop
+  failed_when:
+    - ufw_stop.failed | default(false)
+    - "'Could not find' not in (ufw_stop.msg | default(''))"
+    - "'not found' not in (ufw_stop.msg | default(''))"
+
 - name: Remove UFW
   ansible.builtin.apt:
-    name:
-      - ufw
-    purge: true
+    name: ufw
     state: absent
-  register: ufw_remove
-  notify: Disable and mask UFW
+    purge: true
 
-- name: Install nftables packages
+- name: Install nftables
   ansible.builtin.apt:
+    name: nftables
+    state: present
     update_cache: true
     cache_valid_time: 3600
-    name:
-      - nftables
-    state: present
-  register: nftables_config
 
-- name: Copy nftables config
+- name: Apply custom nftables config (host-specific)
   ansible.builtin.copy:
     src: "{{ nftables_config_path }}"
     dest: /etc/nftables.conf
+    owner: root
+    group: root
     mode: "0644"
+    validate: /usr/sbin/nft -c -f %s
   notify: Restart nftables
-  when: (nftables_config_path is defined) and (nftables_config_path|length > 0)
+  when: nftables_config_path | default('') | length > 0
 
-- name: Copy default nftables config
+- name: Apply default nftables config
   ansible.builtin.template:
     src: nftables.conf.j2
     dest: /etc/nftables.conf
+    owner: root
+    group: root
     mode: "0644"
+    validate: /usr/sbin/nft -c -f %s
   notify: Restart nftables
-  when: (ufw_remove.changed or nftables_config.changed) and (nftables_config_path is not defined or nftables_config_path | length == 0)
+  when: nftables_config_path | default('') | length == 0
+
+- name: Enable and start nftables
+  ansible.builtin.systemd:
+    name: nftables
+    enabled: true
+    state: started

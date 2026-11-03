@@ -9,10 +9,8 @@
 
 - name: Restart nftables
   ansible.builtin.systemd:
-    state: restarted
-    enabled: true
-    daemon_reload: true
     name: nftables
+    state: restarted
 
 - name: Disable and mask UFW
   ansible.builtin.systemd:
